@@ -21,7 +21,7 @@
             <a href="about.html">حول الموقع</a>
         </div>
         <div class="actions-container">
-            <button class="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي">
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
             <button class="cart-btn" onclick="toggleCart()">
@@ -30,9 +30,15 @@
         </div>
     </header>
 
-    <div class="page-container" style="padding: 20px 5%;">
-        <h1 style="margin-bottom: 20px; font-size: 2rem;">جميع الأقسام (9 أقسام)</h1>
-        <div id="loading" style="text-align:center; font-weight:bold;">جاري تحميل الأقسام...</div>
+    <div style="padding: 20px 5% 5px 5%;">
+        <h1 style="margin-bottom: 15px; font-size: 2rem;">جميع الأقسام (9 أقسام)</h1>
+    </div>
+
+    <!-- شريط الأقسام (الكل + 9 أقسام في سطر واحد) -->
+    <div class="category-filter-bar" id="category-filter-bar"></div>
+
+    <div class="page-container" style="padding: 0 5%;">
+        <div id="loading" style="text-align:center; font-weight:bold; font-size:1.2rem;">جاري تحميل الأقسام...</div>
         <div id="categories-sections"></div>
     </div>
 

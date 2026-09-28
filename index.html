@@ -22,7 +22,7 @@
             <a href="about.html">حول الموقع</a>
         </div>
         <div class="actions-container">
-            <button class="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي">
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
             <button class="cart-btn" onclick="toggleCart()">
@@ -42,9 +42,10 @@
         </div>
     </section>
 
-    <!-- سلايدر الأقسام البصري -->
-    <section class="cat-slider-container">
-        <div class="cat-slider" id="cat-visual-slider"></div>
+    <!-- سلايدر الأقسام المستطيل المتوسطن -->
+    <section class="banner-slider-container">
+        <img id="slider-banner-img" src="images/cat_banner_0.jpg" alt="سلايدر القسم">
+        <div class="slider-caption" id="slider-banner-title">قسم الفواكه والخضار</div>
     </section>
 
     <!-- 2 سلايدر مقسومين -->
