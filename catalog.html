@@ -55,14 +55,6 @@
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي للموبايل -->
-    <nav class="mobile-bottom-nav">
-        <a href="index.html"><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html"><i class="fas fa-th-large"></i>الأقسام</a>
-        <a href="catalog.html" class="active"><i class="fas fa-book-open"></i>العروض</a>
-        <a href="about.html"><i class="fas fa-info-circle"></i>حول</a>
-    </nav>
-
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -76,6 +68,25 @@
             </a>
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
+    </div>
+
+    <div class="mobile-bottom-bar">
+        <a href="index.html" class="mobile-bottom-item">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="categories.html" class="mobile-bottom-item">
+            <i class="fas fa-th-large"></i>
+            <span>الأقسام</span>
+        </a>
+        <a href="catalog.html" class="mobile-bottom-item active">
+            <i class="fas fa-book-open"></i>
+            <span>العروض</span>
+        </a>
+        <a href="about.html" class="mobile-bottom-item">
+            <i class="fas fa-info-circle"></i>
+            <span>حول</span>
+        </a>
     </div>
 
     <script src="app.js"></script>

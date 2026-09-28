@@ -7,7 +7,6 @@ const CATEGORIES = [
 let allProducts = [];
 let currentSliderIndex = 0;
 
-// نظام الوضع الليلي المضبوط برمجيًا بالكامل
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -66,7 +65,19 @@ async function loadExcelData() {
             startBannerSlider();
         } else if(isCategoriesPage) {
             initCategoryFilterBar();
-            renderCategoryProducts('الكل');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetCat = urlParams.get('cat');
+            if (targetCat && CATEGORIES.includes(targetCat)) {
+                setTimeout(() => {
+                    const btn = Array.from(document.querySelectorAll('.cat-filter-btn')).find(b => b.innerText.includes(targetCat));
+                    if(btn) {
+                        filterCategory(targetCat, btn);
+                    }
+                }, 100);
+            } else {
+                renderCategoryProducts('الكل');
+            }
         }
 
         updateCartUI();
@@ -81,7 +92,6 @@ async function loadExcelData() {
     }
 }
 
-// السلايدر المستطيل مع إمكانية الضغط عليه للانتقال للقسم مباشرة
 function startBannerSlider() {
     const imgElem = document.getElementById('slider-banner-img');
     const titleElem = document.getElementById('slider-banner-title');
@@ -94,10 +104,10 @@ function startBannerSlider() {
         imgElem.style.opacity = 0;
         setTimeout(() => {
             imgElem.src = `images/cat_banner_${currentSliderIndex}.jpg`;
-            titleElem.innerText = `${catName}`;
+            titleElem.innerText = catName;
             imgElem.style.opacity = 1;
         }, 300);
-    }, 3500);
+    }, 4000);
 }
 
 window.goToCurrentCategory = function() {
@@ -105,43 +115,30 @@ window.goToCurrentCategory = function() {
     window.location.href = `categories.html?cat=${encodeURIComponent(catName)}`;
 }
 
-// شريط تصفية الأقسام (الكل + 9 أقسام)
 function initCategoryFilterBar() {
     const bar = document.getElementById('category-filter-bar');
     if(!bar) return;
 
     bar.innerHTML = '';
 
-    // التحقق هل تم تمرير قسم في الرابط
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetCat = urlParams.get('cat');
-
-    // زر الكل
     const allBtn = document.createElement('button');
-    allBtn.className = targetCat ? 'cat-filter-btn' : 'cat-filter-btn active';
+    allBtn.className = 'cat-filter-btn active';
     allBtn.innerText = 'الكل';
     allBtn.onclick = () => filterCategory('الكل', allBtn);
     bar.appendChild(allBtn);
 
-    // الأقسام التسعة
     CATEGORIES.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = (targetCat === cat) ? 'cat-filter-btn active' : 'cat-filter-btn';
+        btn.className = 'cat-filter-btn';
         btn.innerText = cat;
         btn.onclick = () => filterCategory(cat, btn);
         bar.appendChild(btn);
     });
-
-    if (targetCat) {
-        renderCategoryProducts(targetCat);
-    } else {
-        renderCategoryProducts('الكل');
-    }
 }
 
 function filterCategory(catName, btnElem) {
     document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
-    btnElem.classList.add('active');
+    if(btnElem) btnElem.classList.add('active');
     renderCategoryProducts(catName);
 }
 
@@ -235,7 +232,6 @@ window.changeQty = function(id, delta) {
     }
 }
 
-// السلة (لا تفتح تلقائياً عند الإضافة، فقط يتم تحديث العداد والإجمالي)
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 window.toggleCart = function() {
@@ -316,7 +312,6 @@ function updateCartUI() {
     if(checkoutBtn) checkoutBtn.href = `https://wa.me/201063883209?text=${whatsappMsg}`;
 }
 
-// تشغيل الثيم والبيانات عند الفتح
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     loadExcelData();
