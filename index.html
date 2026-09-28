@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ترولي ماركت | Trolley Market</title>
+    <!-- استدعاء خطوط جوجل (القاهرة) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- استدعاء مكتبة قراءة ملفات الإكسيل -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <header class="navbar">
+        <div class="logo">
+            <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
+        </div>
+        <div class="header-controls">
+            <button id="theme-toggle" class="icon-btn"><i class="fas fa-moon"></i></button>
+            <button id="cart-btn" class="cart-btn">
+                <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- الأقسام -->
+    <section class="categories-wrapper">
+        <div class="categories" id="categories-container">
+            <button class="cat-btn active" data-category="الكل">الكل</button>
+            <button class="cat-btn" data-category="الفواكه والخضار">الفواكه والخضار</button>
+            <button class="cat-btn" data-category="الألبان">الألبان</button>
+            <button class="cat-btn" data-category="التسالي والمكسرات">التسالي والمكسرات</button>
+            <button class="cat-btn" data-category="البقالة">البقالة</button>
+        </div>
+    </section>
+
+    <!-- مساحة عرض العروض (بنر) -->
+    <section class="offers-banner">
+        <div class="banner-content">
+            <h3>كل طلبات البيت لحد البيت</h3>
+            <p>اختار احتياجاتك، احنا بنوصلها لباب البيت</p>
+        </div>
+    </section>
+
+    <!-- شبكة المنتجات -->
+    <main class="products-section">
+        <div id="loading" class="loading">جاري تحميل المنتجات من الإكسيل...</div>
+        <div class="products-grid" id="products-grid">
+            <!-- سيتم إضافة المنتجات هنا برمجياً -->
+        </div>
+    </main>
+
+    <!-- نافذة السلة (Modal) -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>سلة المشتريات</h2>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-total">
+                <h3>الإجمالي: <span id="total-price">0</span> جنيه</h3>
+            </div>
+            <a href="https://wa.me/201063883209" target="_blank" class="checkout-btn" id="checkout-btn">
+                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
+            </a>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
