@@ -36,19 +36,6 @@ function updateThemeIcon() {
     }
 }
 
-// التوست (رسالة التأكيد بدون فتح السلة)
-window.showToast = function(message) {
-    let toast = document.getElementById("toast");
-    if(!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        document.body.appendChild(toast);
-    }
-    toast.innerText = message;
-    toast.className = "show";
-    setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 2500);
-}
-
 async function loadExcelData() {
     try {
         const response = await fetch('products.xlsx');
@@ -79,20 +66,7 @@ async function loadExcelData() {
             startBannerSlider();
         } else if(isCategoriesPage) {
             initCategoryFilterBar();
-            
-            // قراءة القسم المطلوب من السلايدر لو موجود
-            let targetCat = localStorage.getItem('targetCategory');
-            if(targetCat) {
-                localStorage.removeItem('targetCategory');
-                setTimeout(() => {
-                    const btns = document.querySelectorAll('.cat-filter-btn');
-                    btns.forEach(b => {
-                        if(b.innerText === targetCat) b.click();
-                    });
-                }, 100);
-            } else {
-                renderCategoryProducts('الكل');
-            }
+            renderCategoryProducts('الكل');
         }
 
         updateCartUI();
@@ -107,37 +81,44 @@ async function loadExcelData() {
     }
 }
 
-// السلايدر المستطيل (الدوران والانتقال للقسم)
+// السلايدر المستطيل مع إمكانية الضغط عليه للانتقال للقسم مباشرة
 function startBannerSlider() {
     const imgElem = document.getElementById('slider-banner-img');
-    if(!imgElem) return;
+    const titleElem = document.getElementById('slider-banner-title');
+    if(!imgElem || !titleElem) return;
 
     setInterval(() => {
         currentSliderIndex = (currentSliderIndex + 1) % CATEGORIES.length;
+        const catName = CATEGORIES[currentSliderIndex];
+        
         imgElem.style.opacity = 0;
         setTimeout(() => {
             imgElem.src = `images/cat_banner_${currentSliderIndex}.jpg`;
+            titleElem.innerText = `${catName}`;
             imgElem.style.opacity = 1;
         }, 300);
     }, 3500);
 }
 
-window.goToCategoryFromSlider = function() {
+window.goToCurrentCategory = function() {
     const catName = CATEGORIES[currentSliderIndex];
-    localStorage.setItem('targetCategory', catName);
-    window.location.href = 'categories.html';
+    window.location.href = `categories.html?cat=${encodeURIComponent(catName)}`;
 }
 
-// شريط تصفية الأقسام
+// شريط تصفية الأقسام (الكل + 9 أقسام)
 function initCategoryFilterBar() {
     const bar = document.getElementById('category-filter-bar');
     if(!bar) return;
 
     bar.innerHTML = '';
 
+    // التحقق هل تم تمرير قسم في الرابط
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetCat = urlParams.get('cat');
+
     // زر الكل
     const allBtn = document.createElement('button');
-    allBtn.className = 'cat-filter-btn active';
+    allBtn.className = targetCat ? 'cat-filter-btn' : 'cat-filter-btn active';
     allBtn.innerText = 'الكل';
     allBtn.onclick = () => filterCategory('الكل', allBtn);
     bar.appendChild(allBtn);
@@ -145,20 +126,22 @@ function initCategoryFilterBar() {
     // الأقسام التسعة
     CATEGORIES.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = 'cat-filter-btn';
+        btn.className = (targetCat === cat) ? 'cat-filter-btn active' : 'cat-filter-btn';
         btn.innerText = cat;
         btn.onclick = () => filterCategory(cat, btn);
         bar.appendChild(btn);
     });
+
+    if (targetCat) {
+        renderCategoryProducts(targetCat);
+    } else {
+        renderCategoryProducts('الكل');
+    }
 }
 
 function filterCategory(catName, btnElem) {
     document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
     btnElem.classList.add('active');
-    
-    // تمرير الزر ليكون مرئي
-    btnElem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    
     renderCategoryProducts(catName);
 }
 
@@ -175,7 +158,7 @@ function getProductHTML(p) {
     <div class="product-card">
         <img src="${imgSrc}" class="product-img" onerror="this.src='images/placeholder.png'">
         <div class="product-title">${p['الاسم']}</div>
-        <div class="price-container">${priceHTML}</div>
+        <div class="price-container">${priceHTML} / ${p['الوحدة'] || 'وحدة'}</div>
         
         <div class="qty-controls">
             <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
@@ -233,7 +216,7 @@ function renderCategoryProducts(selectedCat) {
         const section = document.createElement('div');
         section.className = 'category-section';
         section.innerHTML = `
-            <div class="section-header"><h3>${selectedCat} (${catProducts.length})</h3></div>
+            <div class="section-header"><h3>${selectedCat} (${catProducts.length} منتج)</h3></div>
             <div class="products-grid">
                 ${catProducts.map(p => getProductHTML(p)).join('')}
             </div>
@@ -252,7 +235,7 @@ window.changeQty = function(id, delta) {
     }
 }
 
-// السلة
+// السلة (لا تفتح تلقائياً عند الإضافة، فقط يتم تحديث العداد والإجمالي)
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 window.toggleCart = function() {
@@ -274,8 +257,6 @@ window.addToCart = function(id, name, price) {
     if(input) input.value = 1;
     saveCart(); 
     updateCartUI();
-    showToast("🛒 تمت الإضافة للسلة بنجاح!");
-    // تم إلغاء toggleCart() لعدم إزعاج المستخدم
 }
 
 window.removeFromCart = function(name) {

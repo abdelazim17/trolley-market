@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ترولي ماركت | حول الموقع</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ترولي ماركت | حول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,33 +12,31 @@
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
-            <span>TROLLEY MARKET</span>
         </div>
-        
         <div class="nav-links">
             <a href="index.html">الرئيسية</a>
             <a href="categories.html">الأقسام</a>
             <a href="catalog.html">مجلة العروض</a>
-            <a href="about.html" class="active">حول الموقع</a>
+            <a href="about.html" class="active">حول</a>
         </div>
-    
         <div class="actions-container">
-            <button class="theme-toggle-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
-            <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span></button>
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
         </div>
     </header>
 
     <div style="padding: 40px 5%; text-align: center; min-height: 70vh;">
-        <h1 style="margin-bottom: 20px;">حول ترولي ماركت</h1>
-        
-        <!-- التعديل اللي طلبته هنا -->
-        <p style="font-size: 1.5rem; margin-bottom: 30px; font-weight: bold; color: var(--secondary);">
-            ترولي ماركت كل طلبات البيت لحد البيت.
+        <h1 style="margin-bottom: 20px;">ترولي ماركت</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 25px; font-weight: bold; color: var(--primary);">
+            كل طلبات البيت لحد البيت
         </p>
         
-        <div style="background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; border: 1px solid var(--border-color);">
-            <h3 style="color: var(--primary);">تواصل معنا عبر واتساب</h3>
-            <p style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;">01063883209</p>
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 450px; margin: 0 auto; border: 1px solid var(--border-color);">
+            <h3 style="margin-bottom: 15px; color: var(--text-color);">امسح الـ QR Code لزيارة الموقع</h3>
+            <div style="margin: 20px 0; display: inline-block; padding: 10px; background: white; border-radius: 10px; border: 1px solid #ddd;">
+                <img src="images/qr_code.png" alt="QR Code" style="width: 180px; height: 180px; display: block;">
+            </div>
             
             <div style="margin-top: 20px; display:flex; gap:10px;">
                 <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color); color:var(--text-color);">
@@ -47,21 +45,21 @@
         </div>
     </div>
 
-    <!-- البار السفلي للموبايل -->
-    <nav class="bottom-nav">
-        <a href="index.html"><i class="fas fa-home"></i><span>الرئيسية</span></a>
-        <a href="categories.html"><i class="fas fa-th-large"></i><span>الأقسام</span></a>
-        <a href="catalog.html"><i class="fas fa-book-open"></i><span>المجلة</span></a>
-        <a href="about.html" class="active"><i class="fas fa-info-circle"></i><span>حول</span></a>
+    <!-- شريط التنقل السفلي للموبايل -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html"><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="categories.html"><i class="fas fa-th-large"></i>الأقسام</a>
+        <a href="catalog.html"><i class="fas fa-book-open"></i>العروض</a>
+        <a href="about.html" class="active"><i class="fas fa-info-circle"></i>حول</a>
     </nav>
-    
+
     <script src="app.js"></script>
     <script>
         function copyLink() {
             const copyText = document.getElementById("site-url");
             copyText.select();
             document.execCommand("copy");
-            showToast("تم نسخ رابط الموقع بنجاح!");
+            alert("تم نسخ رابط الموقع بنجاح!");
         }
     </script>
 </body>
