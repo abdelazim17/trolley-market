@@ -27,20 +27,40 @@
         </div>
     </header>
 
-    <!-- سلايدر مستطيل بيلف أوتوماتيك -->
-    <section class="slider-container">
-        <div class="slides" id="slider">
-            <!-- مسارات الصور دي أنت هتحطها جوه ملف images بنفس الاسم -->
-            <img src="images/slide1.jpg" alt="سلايدر 1" onerror="this.outerHTML='<div class=\'slide-placeholder\'>صورة السلايدر 1 (ضع slide1.jpg في المجلد)</div>'">
-            <img src="images/slide2.jpg" alt="سلايدر 2" onerror="this.outerHTML='<div class=\'slide-placeholder\'>صورة السلايدر 2 (ضع slide2.jpg في المجلد)</div>'">
+    <!-- البانر الترحيبي -->
+    <section class="welcome-banner">
+        <h2>كل طلبات البيت لحد البيت</h2>
+        <p>ترولي ماركت هو شريكك المثالي لتوفير كل احتياجات بيتك طازجة وبأفضل الأسعار. من على الرف لحد باب بيتك في أسرع وقت!</p>
+    </section>
+
+    <!-- المستطيل المقسوم نصين -->
+    <section class="split-banners">
+        <div class="half-banner">
+            <img src="images/split1.jpg" alt="بانر يمين" onerror="this.outerHTML='<span>ضع صورة split1.jpg</span>'">
+        </div>
+        <div class="half-banner">
+            <img src="images/split2.jpg" alt="بانر يسار" onerror="this.outerHTML='<span>ضع صورة split2.jpg</span>'">
         </div>
     </section>
 
-    <h2 class="section-title">العروض الحالية المميزة 🔥</h2>
+    <!-- السلايدر/البانر الكبير الثابت -->
+    <section class="static-banner">
+        <img src="images/static_banner.jpg" alt="بانر رئيسي ثابت" onerror="this.outerHTML='<span>ضع صورة static_banner.jpg</span>'">
+    </section>
+
+    <!-- فلتر الأقسام -->
+    <section class="categories-wrapper">
+        <div class="categories" id="categories-text-container">
+            <button class="cat-btn active" data-category="الكل">الكل</button>
+            <!-- ستضاف الأقسام هنا برمجياً -->
+        </div>
+    </section>
+
     <main class="products-section">
-        <div id="loading" style="text-align:center; padding: 20px;">جاري تحميل المنتجات...</div>
-        <div class="products-grid" id="products-grid">
-            <!-- المنتجات اللي فيها (السعر بعد الخصم) هتتعرض هنا -->
+        <div id="loading" style="text-align:center; padding: 20px; font-weight:bold;">جاري تحميل المنتجات من الإكسيل...</div>
+        
+        <div id="home-sections">
+            <!-- سيتم عرض الأقسام بمنتجاتها هنا -->
         </div>
     </main>
 
@@ -61,14 +81,5 @@
     </div>
 
     <script src="app.js"></script>
-    <script>
-        // تفعيل السلايدر في الصفحة الرئيسية
-        let currentSlide = 0;
-        const slides = document.getElementById('slider');
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % 2; // 2 هو عدد الصور
-            slides.style.transform = `translateX(${currentSlide * 100}%)`; // موجب عشان RTL
-        }, 3000); // 3 ثواني
-    </script>
 </body>
 </html>

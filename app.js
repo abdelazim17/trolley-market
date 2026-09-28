@@ -1,3 +1,9 @@
+const CATEGORIES = [
+    "الفواكه والخضار", "التسالي والمكسرات", "المشروبات",
+    "البقالة", "الألبان", "المخبوزات",
+    "التوابل والبهارات", "الحلويات والكاندي", "المنظفات"
+];
+
 let allProducts = [];
 
 // تحميل البيانات من الإكسيل
@@ -9,24 +15,21 @@ async function loadExcelData() {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         
-        allProducts = jsonData.filter(item => item['الحالة'] == 1);
+        // فلترة المنتجات المتاحة فقط (متوفر = نعم)
+        allProducts = jsonData.filter(item => item['متوفر'] === 'نعم');
         allProducts.forEach((p, idx) => p.id = 'prod_' + idx);
         
-        // تفريغ اللودينج
         const loading = document.getElementById('loading');
         if(loading) loading.style.display = 'none';
 
-        // معرفة الصفحة الحالية لتحديد ما سيتم عرضه
         const isOffersPage = window.location.pathname.includes('offers');
         
         if (isOffersPage) {
-            // صفحة العروض تعرض المنتجات اللي ليها "السعر بعد الخصم"
             const offers = allProducts.filter(p => p['السعر بعد الخصم'] && p['السعر بعد الخصم'] !== '');
-            renderProducts(offers, 'offers-grid');
+            renderGrid(offers, 'offers-grid');
         } else {
-            // الصفحة الرئيسية (نعرض العروض برضه زي ما طلبت)
-            const offers = allProducts.filter(p => p['السعر بعد الخصم'] && p['السعر بعد الخصم'] !== '');
-            renderProducts(offers.length > 0 ? offers : allProducts.slice(0, 8), 'products-grid');
+            initCategoriesFilter();
+            renderHomeSections();
         }
     } catch (error) {
         console.error(error);
@@ -35,41 +38,106 @@ async function loadExcelData() {
     }
 }
 
-function renderProducts(products, gridId) {
-    const grid = document.getElementById(gridId);
-    if(!grid) return;
+function initCategoriesFilter() {
+    const container = document.getElementById('categories-text-container');
+    if(!container) return;
     
-    grid.innerHTML = products.map(p => {
-        // التحقق من وجود خصم
-        let hasOffer = p['السعر بعد الخصم'] && p['السعر بعد الخصم'] !== '';
-        let priceHTML = hasOffer ? 
-            `<span class="new-price">${p['السعر بعد الخصم']} ج</span> <span class="old-price">${p['السعر الأساسي']} ج</span>` :
-            `<span class="new-price">${p['السعر الأساسي']} ج</span>`;
-            
-        let currentPrice = hasOffer ? p['السعر بعد الخصم'] : p['السعر الأساسي'];
-        let imgSrc = p['الصورة'] ? p['الصورة'] : 'images/placeholder.png';
-
-        return `
-        <div class="product-card">
-            <img src="${imgSrc}" alt="${p['الاسم']}" class="product-img" onerror="this.src='images/placeholder.png'">
-            <div class="product-title">${p['الاسم']}</div>
-            <div class="price-container">${priceHTML} / ${p['الوحدة']}</div>
-            
-            <div class="qty-controls">
-                <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
-                <input type="number" id="qty-${p.id}" class="qty-input" value="1" readonly>
-                <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
-            </div>
-            
-            <button class="add-to-cart-btn" onclick="addToCart('${p.id}', '${p['الاسم']}', ${currentPrice})">
-                إضافة للسلة
-            </button>
-        </div>
-        `;
-    }).join('');
+    CATEGORIES.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn';
+        btn.setAttribute('data-category', cat);
+        btn.innerText = cat;
+        btn.onclick = (e) => {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            filterHome(cat);
+        };
+        container.appendChild(btn);
+    });
+    
+    // زرار الكل
+    document.querySelector('.cat-btn[data-category="الكل"]').onclick = (e) => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderHomeSections();
+    };
 }
 
-// تعديل الكمية بصرياً في واجهة المستخدم (الحد الأقصى 25)
+function getProductHTML(p) {
+    let hasOffer = p['السعر بعد الخصم'] && p['السعر بعد الخصم'] !== '';
+    let priceHTML = hasOffer ? 
+        `<span class="new-price">${p['السعر بعد الخصم']} ج</span> <span class="old-price">${p['السعر الأساسي']} ج</span>` :
+        `<span class="new-price">${p['السعر الأساسي']} ج</span>`;
+        
+    let currentPrice = hasOffer ? p['السعر بعد الخصم'] : p['السعر الأساسي'];
+    let imgSrc = p['الصورة'] ? p['الصورة'] : 'images/placeholder.png';
+
+    return `
+    <div class="product-card">
+        <img src="${imgSrc}" alt="${p['الاسم']}" class="product-img" onerror="this.outerHTML='<div style=\'height:140px; background:#f9f9f9; margin-bottom:10px; display:flex; align-items:center; justify-content:center;\'>بدون صورة</div>'">
+        <div class="product-title">${p['الاسم']}</div>
+        <div class="price-container">${priceHTML} / ${p['الوحدة']}</div>
+        
+        <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
+            <input type="number" id="qty-${p.id}" class="qty-input" value="1" readonly>
+            <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
+        </div>
+        
+        <button class="add-to-cart-btn" onclick="addToCart('${p.id}', '${p['الاسم']}', ${currentPrice})">
+            إضافة للسلة
+        </button>
+    </div>
+    `;
+}
+
+function renderHomeSections() {
+    const container = document.getElementById('home-sections');
+    if(!container) return;
+    
+    container.innerHTML = '';
+    
+    CATEGORIES.forEach(cat => {
+        const catProducts = allProducts.filter(p => p['القسم'] === cat);
+        if(catProducts.length > 0) {
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            
+            const header = document.createElement('div');
+            header.className = 'section-header';
+            header.innerHTML = `<h3>${cat}</h3>`;
+            
+            const grid = document.createElement('div');
+            grid.className = 'products-grid';
+            grid.innerHTML = catProducts.map(p => getProductHTML(p)).join('');
+            
+            section.appendChild(header);
+            section.appendChild(grid);
+            container.appendChild(section);
+        }
+    });
+}
+
+function filterHome(category) {
+    const container = document.getElementById('home-sections');
+    container.innerHTML = '';
+    
+    const catProducts = allProducts.filter(p => p['القسم'] === category);
+    if(catProducts.length > 0) {
+        const grid = document.createElement('div');
+        grid.className = 'products-grid';
+        grid.innerHTML = catProducts.map(p => getProductHTML(p)).join('');
+        container.appendChild(grid);
+    }
+}
+
+function renderGrid(products, gridId) {
+    const grid = document.getElementById(gridId);
+    if(!grid) return;
+    grid.innerHTML = products.map(p => getProductHTML(p)).join('');
+}
+
+// العداد (+ و -) الحد الأقصى 25
 window.changeQty = function(id, delta) {
     const input = document.getElementById(`qty-${id}`);
     if(input) {
@@ -95,16 +163,15 @@ window.addToCart = function(id, name, price) {
     const existing = cart.find(item => item.name === name);
     if (existing) {
         existing.qty += qtyToAdd;
-        if(existing.qty > 50) existing.qty = 50; // حد أقصى عام
+        if(existing.qty > 50) existing.qty = 50; 
     } else {
         cart.push({ name, price, qty: qtyToAdd });
     }
     
-    input.value = 1; // إرجاع العداد لـ 1
+    input.value = 1;
     saveCart(); 
     updateCartUI();
     
-    // فتح السلة تلقائياً عند الإضافة لتأكيد العملية
     document.getElementById('cart-sidebar').classList.add('open');
 }
 
@@ -153,7 +220,8 @@ function updateCartUI() {
     const totalPriceSpan = document.getElementById('total-price');
     if(totalPriceSpan) totalPriceSpan.innerText = total;
     
-    let whatsappMsg = "مرحباً، أود طلب الآتي:%0a%0a";
+    // الرسالة المصرية المخصصة للواتساب
+    let whatsappMsg = "مرحباً ترولي ماركت، أنا عاوز أطلب الحاجات دي:%0a%0a";
     cart.forEach(item => { whatsappMsg += `- ${item.name} (الكمية: ${item.qty}) = ${item.price * item.qty} ج%0a`; });
     whatsappMsg += `%0aالإجمالي: ${total} جنيه`;
     
@@ -161,5 +229,4 @@ function updateCartUI() {
     if(checkoutBtn) checkoutBtn.href = `https://wa.me/201063883209?text=${whatsappMsg}`;
 }
 
-// استدعاء البيانات عند تحميل الصفحة
 window.onload = loadExcelData;

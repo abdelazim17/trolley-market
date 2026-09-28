@@ -21,18 +21,40 @@ body { background-color: var(--bg-color); color: var(--text-color); transition: 
 .header-controls { display: flex; gap: 10px; align-items: center;}
 .cart-btn { background-color: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 1rem;}
 
-/* Auto Slider */
-.slider-container { width: 90%; margin: 20px auto; border-radius: 15px; overflow: hidden; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 250px;}
-.slides { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
-.slides img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0;}
-/* Default text if no image */
-.slide-placeholder { width: 100%; height: 100%; flex-shrink: 0; background: var(--dark); color: white; display:flex; align-items:center; justify-content:center; font-size: 1.5rem;}
+/* Welcome Banner */
+.welcome-banner { margin: 20px 5%; background: var(--secondary); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+.welcome-banner h2 { color: var(--bg-color); margin-bottom: 10px; font-size: 1.8rem;}
+.welcome-banner p { font-size: 1.1rem; line-height: 1.6;}
+
+/* Banners (Split & Static) */
+.split-banners { display: flex; gap: 15px; margin: 20px 5%; }
+.half-banner { flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 180px; background-color: var(--dark); display: flex; align-items: center; justify-content: center; color: white;}
+.half-banner img { width: 100%; height: 100%; object-fit: cover; }
+
+.static-banner { margin: 20px 5%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); height: 220px; background-color: var(--primary); display: flex; align-items: center; justify-content: center; color: white;}
+.static-banner img { width: 100%; height: 100%; object-fit: cover; }
+
+@media (max-width: 768px) {
+    .split-banners { flex-direction: column; }
+    .half-banner { height: 150px; }
+    .static-banner { height: 150px; }
+}
+
+/* Category Filter Buttons */
+.categories-wrapper { padding: 10px 5%; overflow-x: auto; white-space: nowrap; scrollbar-width: none; margin-bottom: 20px; border-bottom: 2px solid var(--border-color);}
+.categories-wrapper::-webkit-scrollbar { display: none; }
+.cat-btn { background-color: var(--card-bg); color: var(--dark); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 25px; margin-left: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 1rem;}
+.cat-btn.active, .cat-btn:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
 
 /* Grid & Cards */
-.section-title { text-align: center; color: var(--dark); margin: 30px 0 20px; font-size: 1.8rem;}
-.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 0 5%; margin-bottom: 40px;}
+.products-section { padding: 0 5%; }
+.category-section { margin-bottom: 40px; }
+.section-header { margin-bottom: 20px; border-bottom: 3px solid var(--secondary); padding-bottom: 10px; display: inline-block;}
+.section-header h3 { color: var(--dark); font-size: 1.5rem; }
+
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;}
 .product-card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(43,70,60,0.08);}
-.product-img { width: 100%; height: 140px; object-fit: contain; margin-bottom: 10px; border-radius: 8px;}
+.product-img { width: 100%; height: 140px; object-fit: contain; margin-bottom: 10px; border-radius: 8px; background: #f9f9f9;}
 .product-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; color: var(--dark);}
 .price-container { margin-bottom: 10px; }
 .old-price { text-decoration: line-through; color: #999; font-size: 0.9rem; margin-left: 5px;}
