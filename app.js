@@ -7,6 +7,7 @@ const CATEGORIES = [
 let allProducts = [];
 let currentSliderIndex = 0;
 
+// نظام الوضع الليلي المضبوط برمجيًا بالكامل
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -65,16 +66,14 @@ async function loadExcelData() {
             startBannerSlider();
         } else if(isCategoriesPage) {
             initCategoryFilterBar();
-            
+            // التحقق إذا كان هناك قسم محدد مسبقا في الرابط (من ضغطة السلايدر)
             const urlParams = new URLSearchParams(window.location.search);
-            const targetCat = urlParams.get('cat');
-            if (targetCat && CATEGORIES.includes(targetCat)) {
-                setTimeout(() => {
-                    const btn = Array.from(document.querySelectorAll('.cat-filter-btn')).find(b => b.innerText.includes(targetCat));
-                    if(btn) {
-                        filterCategory(targetCat, btn);
-                    }
-                }, 100);
+            const catParam = urlParams.get('cat');
+            if (catParam && CATEGORIES.includes(catParam)) {
+                const btnId = 'btn-cat-' + CATEGORIES.indexOf(catParam);
+                const btn = document.getElementById(btnId);
+                if(btn) filterCategory(catParam, btn);
+                else renderCategoryProducts('الكل');
             } else {
                 renderCategoryProducts('الكل');
             }
@@ -92,6 +91,7 @@ async function loadExcelData() {
     }
 }
 
+// السلايدر المستطيل التلقائي
 function startBannerSlider() {
     const imgElem = document.getElementById('slider-banner-img');
     const titleElem = document.getElementById('slider-banner-title');
@@ -104,33 +104,38 @@ function startBannerSlider() {
         imgElem.style.opacity = 0;
         setTimeout(() => {
             imgElem.src = `images/cat_banner_${currentSliderIndex}.jpg`;
-            titleElem.innerText = catName;
+            titleElem.innerText = `${catName}`;
             imgElem.style.opacity = 1;
         }, 300);
-    }, 4000);
+    }, 3500);
 }
 
-window.goToCurrentCategory = function() {
+// دالة للانتقال للقسم من ضغطة السلايدر
+window.goToSliderCategory = function() {
     const catName = CATEGORIES[currentSliderIndex];
-    window.location.href = `categories.html?cat=${encodeURIComponent(catName)}`;
+    window.location.href = 'categories.html?cat=' + encodeURIComponent(catName);
 }
 
+// شريط تصفية الأقسام (الكل + 9 أقسام)
 function initCategoryFilterBar() {
     const bar = document.getElementById('category-filter-bar');
     if(!bar) return;
 
     bar.innerHTML = '';
 
+    // زر الكل
     const allBtn = document.createElement('button');
     allBtn.className = 'cat-filter-btn active';
     allBtn.innerText = 'الكل';
     allBtn.onclick = () => filterCategory('الكل', allBtn);
     bar.appendChild(allBtn);
 
-    CATEGORIES.forEach(cat => {
+    // الأقسام التسعة
+    CATEGORIES.forEach((cat, index) => {
         const btn = document.createElement('button');
         btn.className = 'cat-filter-btn';
         btn.innerText = cat;
+        btn.id = 'btn-cat-' + index;
         btn.onclick = () => filterCategory(cat, btn);
         bar.appendChild(btn);
     });
@@ -173,7 +178,8 @@ function renderTodayOffers() {
     if(!container) return;
     container.innerHTML = '';
     
-    const offersProducts = allProducts.filter((p, idx) => idx % 8 === 0).slice(0, 10);
+    // أخذنا 14 منتج بدلا من 10 لتوسيع قسم العروض كما طلبت
+    const offersProducts = allProducts.filter((p, idx) => idx % 6 === 0).slice(0, 14);
     
     if(offersProducts.length > 0) {
         const section = document.createElement('div');
@@ -212,8 +218,9 @@ function renderCategoryProducts(selectedCat) {
         const catProducts = allProducts.filter(p => p['القسم'] === selectedCat);
         const section = document.createElement('div');
         section.className = 'category-section';
+        // شلنا عدد المنتجات من الاسم عشان يبقى أنظف وأبسط
         section.innerHTML = `
-            <div class="section-header"><h3>${selectedCat} (${catProducts.length} منتج)</h3></div>
+            <div class="section-header"><h3>${selectedCat}</h3></div>
             <div class="products-grid">
                 ${catProducts.map(p => getProductHTML(p)).join('')}
             </div>
@@ -232,6 +239,7 @@ window.changeQty = function(id, delta) {
     }
 }
 
+// السلة
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 window.toggleCart = function() {
@@ -253,6 +261,16 @@ window.addToCart = function(id, name, price) {
     if(input) input.value = 1;
     saveCart(); 
     updateCartUI();
+    
+    // تم إلغاء فتح السلة التلقائي بناء على طلبك
+    // toggleCart(); 
+    
+    // تنبيه بصري خفيف بدلا من فتح السلة
+    const cartBtn = document.querySelector('.cart-btn');
+    if(cartBtn) {
+        cartBtn.style.transform = 'scale(1.1)';
+        setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
+    }
 }
 
 window.removeFromCart = function(name) {
@@ -312,6 +330,7 @@ function updateCartUI() {
     if(checkoutBtn) checkoutBtn.href = `https://wa.me/201063883209?text=${whatsappMsg}`;
 }
 
+// تشغيل الثيم والبيانات عند الفتح
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     loadExcelData();

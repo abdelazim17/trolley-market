@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | حول</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -27,40 +27,30 @@
     </header>
 
     <div style="padding: 40px 5%; text-align: center; min-height: 70vh;">
-        <h1 style="margin-bottom: 15px; color: var(--primary);">ترولي ماركت</h1>
-        <p style="font-size: 1.2rem; margin-bottom: 25px; font-weight: bold;">
-            كل طلبات البيت لحد البيت
-        </p>
+        <h1 style="margin-bottom: 10px; color: var(--primary); font-size: 2.5rem; font-weight: 900;">ترولي ماركت</h1>
+        <h3 style="margin-bottom: 30px; color: var(--secondary); font-size: 1.3rem;">كل طلبات البيت لحد البيت</h3>
         
-        <div style="background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 400px; margin: 0 auto; border: 1px solid var(--border-color);">
-            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">مسح الرمز (QR Code) لزيارة الموقع</h3>
-            <img src="images/qrcode.png" alt="QR Code" style="width: 200px; height: 200px; object-fit: contain; margin-bottom: 20px; border-radius: 10px; border: 1px solid var(--border-color); background: white; padding: 5px;">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; border: 1px solid var(--border-color);">
+            <img src="images/qr_code.png" alt="QR Code" style="width: 180px; height: 180px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ccc;">
+            <p style="font-size: 1.1rem; margin-bottom: 10px; font-weight: bold;">امسح الرمز (QR Code) لزيارة الموقع</p>
+            <p style="font-size: 2rem; font-weight: bold; margin: 15px 0; color: var(--primary); direction: ltr; font-family: sans-serif;">01063883209</p>
             
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color); color:var(--text-color); font-size:0.9rem;">
-                <button onclick="copyLink()" style="padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">نسخ</button>
+            <div style="margin-top: 25px; display:flex; gap:10px;">
+                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color); color:var(--text-color);">
+                <button onclick="copyLink()" style="padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">نسخ الرابط</button>
             </div>
         </div>
     </div>
 
-    <div class="mobile-bottom-bar">
-        <a href="index.html" class="mobile-bottom-item">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </a>
-        <a href="categories.html" class="mobile-bottom-item">
-            <i class="fas fa-th-large"></i>
-            <span>الأقسام</span>
-        </a>
-        <a href="catalog.html" class="mobile-bottom-item">
-            <i class="fas fa-book-open"></i>
-            <span>العروض</span>
-        </a>
-        <a href="about.html" class="mobile-bottom-item active">
-            <i class="fas fa-info-circle"></i>
-            <span>حول</span>
-        </a>
-    </div>
+    
+    <!-- شريط التنقل السفلي للموبايل -->
+    <nav class="bottom-nav">
+        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="categories.html" class=""><i class="fas fa-th-list"></i>الأقسام</a>
+        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>مجلة العروض</a>
+        <a href="about.html" class="active"><i class="fas fa-info-circle"></i>حول</a>
+    </nav>
+    
 
     <script src="app.js"></script>
     <script>

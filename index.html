@@ -31,6 +31,7 @@
         </div>
     </header>
 
+    <!-- البانر الترحيبي -->
     <section class="welcome-banner">
         <div class="title">
             <h2>كل طلبات</h2>
@@ -41,16 +42,19 @@
         </div>
     </section>
 
-    <section class="banner-slider-container" onclick="goToCurrentCategory()">
+    <!-- سلايدر الأقسام المستطيل (قابل للضغط وينقل للقسم المختار) -->
+    <section class="banner-slider-container" onclick="goToSliderCategory()" title="اضغط للذهاب للقسم">
         <img id="slider-banner-img" src="images/cat_banner_0.jpg" alt="سلايدر القسم">
         <div class="slider-caption" id="slider-banner-title">الفواكه والخضار</div>
     </section>
 
+    <!-- 2 بانر مقسومين -->
     <section class="split-banners">
         <div class="half-banner"><img src="images/split1.jpg" alt="بانر يمين"></div>
         <div class="half-banner"><img src="images/split2.jpg" alt="بانر يسار"></div>
     </section>
 
+    <!-- سلايدر كبير ثابت -->
     <section class="static-banner">
         <img src="images/static_banner.jpg" alt="بانر رئيسي ثابت">
     </section>
@@ -66,6 +70,7 @@
         <div id="home-sections"></div>
     </main>
 
+    <!-- الشريط الجانبي للسلة -->
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -80,25 +85,16 @@
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
-
-    <div class="mobile-bottom-bar">
-        <a href="index.html" class="mobile-bottom-item active">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </a>
-        <a href="categories.html" class="mobile-bottom-item">
-            <i class="fas fa-th-large"></i>
-            <span>الأقسام</span>
-        </a>
-        <a href="catalog.html" class="mobile-bottom-item">
-            <i class="fas fa-book-open"></i>
-            <span>العروض</span>
-        </a>
-        <a href="about.html" class="mobile-bottom-item">
-            <i class="fas fa-info-circle"></i>
-            <span>حول</span>
-        </a>
-    </div>
+    
+    
+    <!-- شريط التنقل السفلي للموبايل -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="active"><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="categories.html" class=""><i class="fas fa-th-list"></i>الأقسام</a>
+        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>مجلة العروض</a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
+    </nav>
+    
 
     <script src="app.js"></script>
 </body>
