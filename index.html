@@ -4,68 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | Trolley Market</title>
-    <!-- استدعاء خطوط جوجل (القاهرة) -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- استدعاء أيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- استدعاء مكتبة قراءة ملفات الإكسيل -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- شريط التنقل العلوي -->
     <header class="navbar">
-        <div class="logo">
+        <div class="logo" onclick="renderHome()" style="cursor:pointer;">
             <h2>ترولي ماركت</h2>
             <span>TROLLEY MARKET</span>
         </div>
         <div class="header-controls">
-            <button id="theme-toggle" class="icon-btn"><i class="fas fa-moon"></i></button>
+            <button id="theme-toggle" class="icon-btn" title="تغيير المظهر"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" onclick="document.getElementById('about-modal').style.display='block'" title="حول"><i class="fas fa-info-circle"></i></button>
+            <button class="icon-btn offers-btn" onclick="document.getElementById('offers-modal').style.display='block'" title="عروض اليوم"><i class="fas fa-gift"></i> عروض اليوم</button>
             <button id="cart-btn" class="cart-btn">
                 <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
             </button>
         </div>
     </header>
 
-    <!-- الأقسام -->
-    <section class="categories-wrapper">
-        <div class="categories" id="categories-container">
-            <button class="cat-btn active" data-category="الكل">الكل</button>
-            <button class="cat-btn" data-category="الفواكه والخضار">الفواكه والخضار</button>
-            <button class="cat-btn" data-category="الألبان">الألبان</button>
-            <button class="cat-btn" data-category="التسالي والمكسرات">التسالي والمكسرات</button>
-            <button class="cat-btn" data-category="البقالة">البقالة</button>
-        </div>
-    </section>
-
-    <!-- مساحة عرض العروض (بنر) -->
-    <section class="offers-banner">
+    <!-- البانر الرئيسي -->
+    <section class="main-banner">
         <div class="banner-content">
             <h3>كل طلبات البيت لحد البيت</h3>
             <p>اختار احتياجاتك، احنا بنوصلها لباب البيت</p>
         </div>
     </section>
 
-    <!-- شبكة المنتجات -->
+    <!-- سلايدر الأقسام (صور دائرية) -->
+    <section class="cat-slider-container">
+        <div class="cat-slider" id="cat-visual-slider">
+            <!-- سيتم حقن الأقسام هنا عبر الجافاسكريبت -->
+        </div>
+    </section>
+
+    <!-- فلتر الأقسام النصي (اختياري، مكمل للسلايدر) -->
+    <section class="categories-wrapper">
+        <div class="categories" id="categories-text-container">
+            <button class="cat-btn active" data-category="الكل">الكل</button>
+            <!-- الأزرار ستضاف ديناميكياً -->
+        </div>
+    </section>
+
     <main class="products-section">
         <div id="loading" class="loading">جاري تحميل المنتجات من الإكسيل...</div>
-        <div class="products-grid" id="products-grid">
-            <!-- سيتم إضافة المنتجات هنا برمجياً -->
+        <div id="home-sections">
+            <!-- سيتم حقن أقسام الرئيسية هنا (كل قسم يحتوي على 6 منتجات) -->
+        </div>
+        <div class="products-grid" id="filtered-grid" style="display:none;">
+            <!-- سيتم حقن المنتجات هنا عند فلترة قسم معين -->
         </div>
     </main>
 
-    <!-- نافذة السلة (Modal) -->
+    <!-- نافذة السلة -->
     <div id="cart-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
             <h2>سلة المشتريات</h2>
             <div id="cart-items" class="cart-items"></div>
             <div class="cart-total">
                 <h3>الإجمالي: <span id="total-price">0</span> جنيه</h3>
             </div>
-            <a href="https://wa.me/201063883209" target="_blank" class="checkout-btn" id="checkout-btn">
-                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
-            </a>
+            <div class="cart-actions">
+                <button onclick="clearCart()" class="clear-cart-btn"><i class="fas fa-trash-alt"></i> إفراغ السلة</button>
+                <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
+                    <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة حول الموقع -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+            <h2>حول ترولي ماركت</h2>
+            <img src="images/qr.png" alt="QR Code" class="qr-code">
+            <p>تواصل معنا عبر واتساب: <strong>01063883209</strong></p>
+            <div class="link-copy">
+                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly>
+                <button onclick="copyLink()"><i class="fas fa-copy"></i> نسخ الرابط</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة العروض -->
+    <div id="offers-modal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+            <h2>عروض اليوم 🔥</h2>
+            <p>خصومات تصل إلى 20% على منتجات الألبان والخضار الطازج.</p>
+            <!-- يمكن ربط هذه النافذة بمنتجات مخصصة لاحقاً -->
+            <button onclick="document.getElementById('offers-modal').style.display='none'" class="cat-btn active">تصفح المنتجات</button>
         </div>
     </div>
 
