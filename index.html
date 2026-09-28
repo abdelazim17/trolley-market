@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ترولي ماركت | Trolley Market</title>
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <title>ترولي ماركت | الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -12,96 +11,64 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="logo" onclick="renderHome()" style="cursor:pointer;">
+        <div class="logo">
             <h2>ترولي ماركت</h2>
             <span>TROLLEY MARKET</span>
         </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">الرئيسية</a>
+            <a href="offers.html">عروض اليوم</a>
+            <a href="about.html">حول الموقع</a>
+        </div>
         <div class="header-controls">
-            <button id="theme-toggle" class="icon-btn" title="تغيير المظهر"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="document.getElementById('about-modal').style.display='block'" title="حول"><i class="fas fa-info-circle"></i></button>
-            <button class="icon-btn offers-btn" onclick="document.getElementById('offers-modal').style.display='block'" title="عروض اليوم"><i class="fas fa-gift"></i> عروض اليوم</button>
-            <button id="cart-btn" class="cart-btn">
+            <button class="cart-btn" onclick="toggleCart()">
                 <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
             </button>
         </div>
     </header>
 
-    <!-- البانر الرئيسي -->
-    <section class="main-banner">
-        <div class="banner-content">
-            <h3>كل طلبات البيت لحد البيت</h3>
-            <p>اختار احتياجاتك، احنا بنوصلها لباب البيت</p>
+    <!-- سلايدر مستطيل بيلف أوتوماتيك -->
+    <section class="slider-container">
+        <div class="slides" id="slider">
+            <!-- مسارات الصور دي أنت هتحطها جوه ملف images بنفس الاسم -->
+            <img src="images/slide1.jpg" alt="سلايدر 1" onerror="this.outerHTML='<div class=\'slide-placeholder\'>صورة السلايدر 1 (ضع slide1.jpg في المجلد)</div>'">
+            <img src="images/slide2.jpg" alt="سلايدر 2" onerror="this.outerHTML='<div class=\'slide-placeholder\'>صورة السلايدر 2 (ضع slide2.jpg في المجلد)</div>'">
         </div>
     </section>
 
-    <!-- سلايدر الأقسام (صور دائرية) -->
-    <section class="cat-slider-container">
-        <div class="cat-slider" id="cat-visual-slider">
-            <!-- سيتم حقن الأقسام هنا عبر الجافاسكريبت -->
-        </div>
-    </section>
-
-    <!-- فلتر الأقسام النصي (اختياري، مكمل للسلايدر) -->
-    <section class="categories-wrapper">
-        <div class="categories" id="categories-text-container">
-            <button class="cat-btn active" data-category="الكل">الكل</button>
-            <!-- الأزرار ستضاف ديناميكياً -->
-        </div>
-    </section>
-
+    <h2 class="section-title">العروض الحالية المميزة 🔥</h2>
     <main class="products-section">
-        <div id="loading" class="loading">جاري تحميل المنتجات من الإكسيل...</div>
-        <div id="home-sections">
-            <!-- سيتم حقن أقسام الرئيسية هنا (كل قسم يحتوي على 6 منتجات) -->
-        </div>
-        <div class="products-grid" id="filtered-grid" style="display:none;">
-            <!-- سيتم حقن المنتجات هنا عند فلترة قسم معين -->
+        <div id="loading" style="text-align:center; padding: 20px;">جاري تحميل المنتجات...</div>
+        <div class="products-grid" id="products-grid">
+            <!-- المنتجات اللي فيها (السعر بعد الخصم) هتتعرض هنا -->
         </div>
     </main>
 
-    <!-- نافذة السلة -->
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
-            <h2>سلة المشتريات</h2>
-            <div id="cart-items" class="cart-items"></div>
-            <div class="cart-total">
-                <h3>الإجمالي: <span id="total-price">0</span> جنيه</h3>
-            </div>
-            <div class="cart-actions">
-                <button onclick="clearCart()" class="clear-cart-btn"><i class="fas fa-trash-alt"></i> إفراغ السلة</button>
-                <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
-                    <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
-                </a>
-            </div>
+    <!-- الشريط الجانبي للسلة (Sidebar) -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>سلة المشتريات</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
         </div>
-    </div>
-
-    <!-- نافذة حول الموقع -->
-    <div id="about-modal" class="modal">
-        <div class="modal-content text-center">
-            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
-            <h2>حول ترولي ماركت</h2>
-            <img src="images/qr.png" alt="QR Code" class="qr-code">
-            <p>تواصل معنا عبر واتساب: <strong>01063883209</strong></p>
-            <div class="link-copy">
-                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly>
-                <button onclick="copyLink()"><i class="fas fa-copy"></i> نسخ الرابط</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة العروض -->
-    <div id="offers-modal" class="modal">
-        <div class="modal-content text-center">
-            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
-            <h2>عروض اليوم 🔥</h2>
-            <p>خصومات تصل إلى 20% على منتجات الألبان والخضار الطازج.</p>
-            <!-- يمكن ربط هذه النافذة بمنتجات مخصصة لاحقاً -->
-            <button onclick="document.getElementById('offers-modal').style.display='none'" class="cat-btn active">تصفح المنتجات</button>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
+            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
+                <i class="fab fa-whatsapp"></i> إرسال الطلب
+            </a>
+            <button class="clear-cart-btn" onclick="clearCart()">إفراغ السلة</button>
         </div>
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // تفعيل السلايدر في الصفحة الرئيسية
+        let currentSlide = 0;
+        const slides = document.getElementById('slider');
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 2; // 2 هو عدد الصور
+            slides.style.transform = `translateX(${currentSlide * 100}%)`; // موجب عشان RTL
+        }, 3000); // 3 ثواني
+    </script>
 </body>
 </html>

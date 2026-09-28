@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ترولي ماركت | حول الموقع</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h2>ترولي ماركت</h2>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">الرئيسية</a>
+            <a href="offers.html">عروض اليوم</a>
+            <a href="about.html" class="active">حول الموقع</a>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <h1>حول ترولي ماركت</h1>
+        <p style="font-size: 1.2rem; color: var(--dark); margin-bottom: 20px;">
+            مرحباً بك في ترولي ماركت، كل طلبات البيت لحد باب البيت!
+        </p>
+        
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto;">
+            <h3 style="color: var(--primary);">تواصل معنا عبر واتساب</h3>
+            <p style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;">01063883209</p>
+            
+            <!-- قم بوضع صورة الـ QR كود الخاصة بك باسم qr_code.png في مجلد images -->
+            <img src="images/qr_code.png" alt="مسح كود الواتساب" class="qr-code" onerror="this.outerHTML='<div class=\'qr-code\' style=\'display:flex; align-items:center; justify-content:center; background:#eee;\'>ضع صورة qr_code.png هنا</div>'">
+            
+            <p>امسح الكود بكاميرا الموبايل للتواصل السريع</p>
+            
+            <div style="margin-top: 20px;">
+                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="padding: 10px; width: 70%; border: 1px solid var(--border-color); text-align: left; direction: ltr;">
+                <button onclick="copyLink()" style="padding: 10px 15px; background: var(--secondary); color: white; border: none; cursor: pointer; font-weight: bold;">نسخ الرابط</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyLink() {
+            const copyText = document.getElementById("site-url");
+            copyText.select();
+            document.execCommand("copy");
+            alert("تم نسخ رابط الموقع بنجاح!");
+        }
+    </script>
+</body>
+</html>
