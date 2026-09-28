@@ -1,3 +1,9 @@
+const CATEGORIES = [
+    "الفواكه والخضار", "التسالي والمكسرات", "المشروبات",
+    "البقالة", "الألبان", "المخبوزات",
+    "التوابل والبهارات", "الحلويات والكاندي", "المنظفات"
+];
+
 let allProducts = [];
 
 async function loadExcelData() {
@@ -10,7 +16,6 @@ async function loadExcelData() {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         
-        // فلترة (متوفر = نعم)
         allProducts = jsonData.filter(item => item['متوفر'] === 'نعم');
         allProducts.forEach((p, idx) => p.id = 'prod_' + idx);
         
@@ -23,11 +28,18 @@ async function loadExcelData() {
             return;
         }
 
-        // إحنا دلوقتي في الرئيسية؟ نعرض بس عروض اليوم
+        initCatSlider();
+
         const isHomePage = window.location.pathname.includes('index') || window.location.pathname.endsWith('/');
+        const isCategoriesPage = window.location.pathname.includes('categories');
+
         if(isHomePage) {
             renderTodayOffers();
+        } else if(isCategoriesPage) {
+            renderAllCategories();
         }
+
+        updateCartUI();
 
     } catch (error) {
         console.error("خطأ في التحميل:", error);
@@ -39,6 +51,24 @@ async function loadExcelData() {
     }
 }
 
+// سلايدر الأقسام (صور دائرية)
+function initCatSlider() {
+    const slider = document.getElementById('cat-visual-slider');
+    if(!slider) return;
+    
+    slider.innerHTML = '';
+    CATEGORIES.forEach((cat, index) => {
+        const item = document.createElement('a');
+        item.className = 'cat-item';
+        item.href = 'categories.html';
+        item.innerHTML = `
+            <img src="images/cat_${index}.jpg" alt="${cat}" onerror="this.src='images/placeholder.png'">
+            <span>${cat}</span>
+        `;
+        slider.appendChild(item);
+    });
+}
+
 function getProductHTML(p) {
     let hasOffer = p['السعر بعد الخصم'] && p['السعر بعد الخصم'] !== '';
     let priceHTML = hasOffer ? 
@@ -46,13 +76,13 @@ function getProductHTML(p) {
         `<span class="new-price">${p['السعر الأساسي']} ج</span>`;
         
     let currentPrice = hasOffer ? p['السعر بعد الخصم'] : p['السعر الأساسي'];
-    let imgSrc = p['الصورة'] ? p['الصورة'] : 'images/placeholder.png';
+    let imgSrc = p['الصورة'] && p['الصورة'] !== 'images/placeholder.png' ? p['الصورة'] : 'images/placeholder.png';
 
     return `
     <div class="product-card">
         <img src="${imgSrc}" class="product-img" onerror="this.src='images/placeholder.png'">
         <div class="product-title">${p['الاسم']}</div>
-        <div class="price-container">${priceHTML} / ${p['الوحدة']}</div>
+        <div class="price-container">${priceHTML} / ${p['الوحدة'] || 'وحدة'}</div>
         
         <div class="qty-controls">
             <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
@@ -65,12 +95,12 @@ function getProductHTML(p) {
     `;
 }
 
+// عرض عروض اليوم في الصفحة الرئيسية
 function renderTodayOffers() {
     const container = document.getElementById('home-sections');
     if(!container) return;
     container.innerHTML = '';
     
-    // فلترة المنتجات اللي قسمها "عروض اليوم" من الإكسيل
     const offersProducts = allProducts.filter(p => p['القسم'] === 'عروض اليوم');
     
     if(offersProducts.length > 0) {
@@ -88,19 +118,40 @@ function renderTodayOffers() {
     }
 }
 
+// عرض جميع الأقسام في صفحة الأقسام
+function renderAllCategories() {
+    const container = document.getElementById('categories-sections');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    CATEGORIES.forEach(cat => {
+        const catProducts = allProducts.filter(p => p['القسم'] === cat);
+        if(catProducts.length > 0) {
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            section.innerHTML = `
+                <div class="section-header"><h3>${cat}</h3></div>
+                <div class="products-grid">
+                    ${catProducts.map(p => getProductHTML(p)).join('')}
+                </div>
+            `;
+            container.appendChild(section);
+        }
+    });
+}
+
 window.changeQty = function(id, delta) {
     const input = document.getElementById(`qty-${id}`);
     if(input) {
         let val = parseInt(input.value) + delta;
         if(val < 1) val = 1;
-        if(val > 25) val = 25;
+        if(val > 25) val > 25 ? val = 25 : null;
         input.value = val;
     }
 }
 
 // السلة
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
-updateCartUI();
 
 window.toggleCart = function() {
     document.getElementById('cart-sidebar').classList.toggle('open');
@@ -126,6 +177,13 @@ window.addToCart = function(id, name, price) {
 window.removeFromCart = function(name) {
     cart = cart.filter(item => item.name !== name);
     saveCart(); updateCartUI();
+}
+
+window.clearCart = function() {
+    if(confirm('هل أنت متأكد من إزالة كل الطلبات من السلة؟')) {
+        cart = [];
+        saveCart(); updateCartUI();
+    }
 }
 
 function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }

@@ -29,8 +29,20 @@
             <h3 style="color: var(--primary);">تواصل معنا عبر واتساب</h3>
             <p style="font-size: 1.5rem; font-weight: bold; margin: 10px 0; color: var(--dark);">01063883209</p>
             
-            <p style="color: var(--secondary); font-weight: bold;">امسح الكود بكاميرا الموبايل للتواصل السريع</p>
+            <div style="margin-top: 20px; display:flex; gap:10px;">
+                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color);">
+                <button onclick="copyLink()" style="padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">نسخ الرابط</button>
+            </div>
         </div>
     </div>
+
+    <script>
+        function copyLink() {
+            const copyText = document.getElementById("site-url");
+            copyText.select();
+            document.execCommand("copy");
+            alert("تم نسخ رابط الموقع بنجاح!");
+        }
+    </script>
 </body>
 </html>

@@ -25,7 +25,7 @@
         </button>
     </header>
 
-    <!-- البانر الترحيبي -->
+    <!-- البانر الترحيبي (الكحلي مع تقسيم السطور) -->
     <section class="welcome-banner">
         <div class="title">
             <h2>كل طلبات</h2>
@@ -33,6 +33,13 @@
         </div>
         <div class="subtitle">
             <p>من على الرف لحد باب بيتك في أسرع وقت!</p>
+        </div>
+    </section>
+
+    <!-- سلايدر الأقسام (صور دائرية تعرض الأقسام التسعة) -->
+    <section class="cat-slider-container">
+        <div class="cat-slider" id="cat-visual-slider">
+            <!-- سيتم حقن الأقسام هنا برمجياً -->
         </div>
     </section>
 
@@ -61,7 +68,7 @@
         </div>
         
         <div id="home-sections">
-            <!-- سيتم عرض عروض اليوم هنا -->
+            <!-- عروض اليوم -->
         </div>
     </main>
 
@@ -75,8 +82,9 @@
         <div class="cart-footer">
             <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
             <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
-                <i class="fab fa-whatsapp"></i> إرسال الطلب
+                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
             </a>
+            <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
 
