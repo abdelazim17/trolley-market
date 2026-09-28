@@ -14,13 +14,13 @@
         </div>
         <div class="nav-links">
             <a href="index.html">الرئيسية</a>
-            <a href="offers.html">عروض اليوم</a>
+            <a href="categories.html">الأقسام</a>
             <a href="about.html" class="active">حول الموقع</a>
         </div>
     </header>
 
-    <div class="page-container">
-        <h1>حول ترولي ماركت</h1>
+    <div style="padding: 40px 5%; text-align: center; min-height: 70vh;">
+        <h1 style="color: var(--dark); margin-bottom: 20px;">حول ترولي ماركت</h1>
         <p style="font-size: 1.2rem; color: var(--dark); margin-bottom: 20px;">
             ترولي ماركت هو شريكك المثالي للتسوق المريح. نوفر لك كل ما تحتاجه من مقاضي البيت بأعلى جودة وأفضل سعر.
         </p>
@@ -29,24 +29,8 @@
             <h3 style="color: var(--primary);">تواصل معنا عبر واتساب</h3>
             <p style="font-size: 1.5rem; font-weight: bold; margin: 10px 0; color: var(--dark);">01063883209</p>
             
-            <img src="images/qr_code.png" alt="مسح كود الواتساب" class="qr-code" onerror="this.outerHTML='<div class=\'qr-code\' style=\'display:flex; align-items:center; justify-content:center; background:#eee;\'>ضع صورة qr_code.png هنا</div>'">
-            
             <p style="color: var(--secondary); font-weight: bold;">امسح الكود بكاميرا الموبايل للتواصل السريع</p>
-            
-            <div style="margin-top: 20px; display:flex; gap:10px;">
-                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color);">
-                <button onclick="copyLink()" style="padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">نسخ الرابط</button>
-            </div>
         </div>
     </div>
-
-    <script>
-        function copyLink() {
-            const copyText = document.getElementById("site-url");
-            copyText.select();
-            document.execCommand("copy");
-            alert("تم نسخ رابط الموقع بنجاح!");
-        }
-    </script>
 </body>
 </html>
