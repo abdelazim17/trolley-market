@@ -17,68 +17,54 @@
         </div>
         <div class="nav-links">
             <a href="index.html" class="active">الرئيسية</a>
-            <a href="offers.html">عروض اليوم</a>
-            <a href="about.html">حول الموقع</a>
         </div>
-        <div class="header-controls">
-            <button class="cart-btn" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
-            </button>
-        </div>
+        <button class="cart-btn" onclick="alert('السلة تحت التطوير للتأكد من الأساسيات أولاً')">
+            <i class="fas fa-shopping-cart"></i> السلة
+        </button>
     </header>
 
-    <!-- البانر الترحيبي -->
+    <!-- البانر الترحيبي (تم تعديل النص حسب طلبك) -->
     <section class="welcome-banner">
         <h2>كل طلبات البيت لحد البيت</h2>
-        <p>ترولي ماركت هو شريكك المثالي لتوفير كل احتياجات بيتك طازجة وبأفضل الأسعار. من على الرف لحد باب بيتك في أسرع وقت!</p>
+        <p>من على الرف لحد باب بيتك في أسرع وقت!</p>
     </section>
 
-    <!-- المستطيل المقسوم نصين -->
+    <!-- 2 سلايدر مقسومين نصين (تم تجهيز صور لهم) -->
     <section class="split-banners">
         <div class="half-banner">
-            <img src="images/split1.jpg" alt="بانر يمين" onerror="this.outerHTML='<span>ضع صورة split1.jpg</span>'">
+            <img src="images/split1.jpg" alt="بانر يمين">
         </div>
         <div class="half-banner">
-            <img src="images/split2.jpg" alt="بانر يسار" onerror="this.outerHTML='<span>ضع صورة split2.jpg</span>'">
+            <img src="images/split2.jpg" alt="بانر يسار">
         </div>
     </section>
 
-    <!-- السلايدر/البانر الكبير الثابت -->
+    <!-- سلايدر كبير ثابت -->
     <section class="static-banner">
-        <img src="images/static_banner.jpg" alt="بانر رئيسي ثابت" onerror="this.outerHTML='<span>ضع صورة static_banner.jpg</span>'">
+        <img src="images/static_banner.jpg" alt="بانر رئيسي ثابت">
     </section>
 
     <!-- فلتر الأقسام -->
     <section class="categories-wrapper">
         <div class="categories" id="categories-text-container">
             <button class="cat-btn active" data-category="الكل">الكل</button>
-            <!-- ستضاف الأقسام هنا برمجياً -->
+            <!-- سيتم إضافة الأقسام هنا -->
         </div>
     </section>
 
+    <div id="error-box" class="error-msg">
+        حدثت مشكلة في قراءة ملف الإكسيل (products.xlsx). تأكد أن الملف موجود ومرفوع بشكل صحيح!
+    </div>
+    
     <main class="products-section">
-        <div id="loading" style="text-align:center; padding: 20px; font-weight:bold;">جاري تحميل المنتجات من الإكسيل...</div>
+        <div id="loading" style="text-align:center; padding: 20px; font-weight:bold; font-size:1.5rem; color:var(--primary);">
+            <i class="fas fa-spinner fa-spin"></i> جاري تحميل المنتجات...
+        </div>
         
         <div id="home-sections">
-            <!-- سيتم عرض الأقسام بمنتجاتها هنا -->
+            <!-- سيتم عرض المنتجات هنا -->
         </div>
     </main>
-
-    <!-- الشريط الجانبي للسلة (Sidebar) -->
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>سلة المشتريات</h3>
-            <button class="close-cart" onclick="toggleCart()">&times;</button>
-        </div>
-        <div class="cart-items" id="cart-items"></div>
-        <div class="cart-footer">
-            <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
-            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
-                <i class="fab fa-whatsapp"></i> إرسال الطلب
-            </a>
-            <button class="clear-cart-btn" onclick="clearCart()">إفراغ السلة</button>
-        </div>
-    </div>
 
     <script src="app.js"></script>
 </body>
