@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ترولي ماركت | الرئيسية</title>
+    <title>ترولي ماركت | مجلة العروض</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
-            <span>TROLLEY MARKET</span>
         </div>
         <div class="nav-links">
-            <a href="index.html" class="active">الرئيسية</a>
+            <a href="index.html">الرئيسية</a>
             <a href="categories.html">الأقسام</a>
-            <a href="catalog.html">مجلة العروض</a>
+            <a href="catalog.html" class="active">مجلة العروض</a>
             <a href="about.html">حول الموقع</a>
         </div>
         <div class="actions-container">
@@ -31,45 +29,32 @@
         </div>
     </header>
 
-    <!-- البانر الترحيبي -->
-    <section class="welcome-banner">
-        <div class="title">
-            <h2>كل طلبات</h2>
-            <h2><span class="highlight">البيت لحد البيت</span></h2>
+    <div class="catalog-container">
+        <h1 style="margin-bottom: 10px; font-size: 2.2rem;">📖 مجلة العروض الحصرية</h1>
+        <p style="margin-bottom: 30px; font-size: 1.1rem; opacity: 0.8;">تصفح صفحات المجلة الخمس وتعرف على أحدث العروض والخصومات</p>
+        
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الأولى (1 / 5)</h2>
+            <img src="images/offer_page_1.jpg" alt="صفحة العروض 1" onerror="this.src='images/placeholder.png'">
         </div>
-        <div class="subtitle">
-            <p>من على الرف لحد باب بيتك في أسرع وقت!</p>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثانية (2 / 5)</h2>
+            <img src="images/offer_page_2.jpg" alt="صفحة العروض 2" onerror="this.src='images/placeholder.png'">
         </div>
-    </section>
-
-    <!-- سلايدر الأقسام البصري -->
-    <section class="cat-slider-container">
-        <div class="cat-slider" id="cat-visual-slider"></div>
-    </section>
-
-    <!-- 2 سلايدر مقسومين -->
-    <section class="split-banners">
-        <div class="half-banner"><img src="images/split1.jpg" alt="بانر يمين"></div>
-        <div class="half-banner"><img src="images/split2.jpg" alt="بانر يسار"></div>
-    </section>
-
-    <!-- سلايدر كبير ثابت -->
-    <section class="static-banner">
-        <img src="images/static_banner.jpg" alt="بانر رئيسي ثابت">
-    </section>
-
-    <div id="error-box" class="error-msg">
-        حدثت مشكلة في قراءة ملف الإكسيل (products.xlsx). تأكد أن الملف موجود ومرفوع بشكل صحيح!
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثالثة (3 / 5)</h2>
+            <img src="images/offer_page_3.jpg" alt="صفحة العروض 3" onerror="this.src='images/placeholder.png'">
+        </div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الرابعة (4 / 5)</h2>
+            <img src="images/offer_page_4.jpg" alt="صفحة العروض 4" onerror="this.src='images/placeholder.png'">
+        </div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الخامسة (5 / 5)</h2>
+            <img src="images/offer_page_5.jpg" alt="صفحة العروض 5" onerror="this.src='images/placeholder.png'">
+        </div>
     </div>
-    
-    <main class="products-section">
-        <div id="loading" style="text-align:center; padding: 20px; font-weight:bold; font-size:1.5rem; color:var(--primary);">
-            <i class="fas fa-spinner fa-spin"></i> جاري تحميل العروض...
-        </div>
-        <div id="home-sections"></div>
-    </main>
 
-    <!-- الشريط الجانبي للسلة -->
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>

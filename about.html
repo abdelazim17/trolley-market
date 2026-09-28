@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | حول الموقع</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,27 +16,34 @@
         <div class="nav-links">
             <a href="index.html">الرئيسية</a>
             <a href="categories.html">الأقسام</a>
+            <a href="catalog.html">مجلة العروض</a>
             <a href="about.html" class="active">حول الموقع</a>
+        </div>
+        <div class="actions-container">
+            <button class="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
         </div>
     </header>
 
     <div style="padding: 40px 5%; text-align: center; min-height: 70vh;">
-        <h1 style="color: var(--dark); margin-bottom: 20px;">حول ترولي ماركت</h1>
-        <p style="font-size: 1.2rem; color: var(--dark); margin-bottom: 20px;">
+        <h1 style="margin-bottom: 20px;">حول ترولي ماركت</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
             ترولي ماركت هو شريكك المثالي للتسوق المريح. نوفر لك كل ما تحتاجه من مقاضي البيت بأعلى جودة وأفضل سعر.
         </p>
         
-        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; border: 1px solid var(--border-color);">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; border: 1px solid var(--border-color);">
             <h3 style="color: var(--primary);">تواصل معنا عبر واتساب</h3>
-            <p style="font-size: 1.5rem; font-weight: bold; margin: 10px 0; color: var(--dark);">01063883209</p>
+            <p style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;">01063883209</p>
             
             <div style="margin-top: 20px; display:flex; gap:10px;">
-                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color);">
+                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color); color:var(--text-color);">
                 <button onclick="copyLink()" style="padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">نسخ الرابط</button>
             </div>
         </div>
     </div>
 
+    <script src="app.js"></script>
     <script>
         function copyLink() {
             const copyText = document.getElementById("site-url");

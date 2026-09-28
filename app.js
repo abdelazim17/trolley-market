@@ -51,7 +51,7 @@ async function loadExcelData() {
     }
 }
 
-// سلايدر الأقسام (صور دائرية)
+// سلايدر الأقسام البصري
 function initCatSlider() {
     const slider = document.getElementById('cat-visual-slider');
     if(!slider) return;
@@ -95,19 +95,19 @@ function getProductHTML(p) {
     `;
 }
 
-// عرض عروض اليوم في الصفحة الرئيسية
 function renderTodayOffers() {
     const container = document.getElementById('home-sections');
     if(!container) return;
     container.innerHTML = '';
     
-    const offersProducts = allProducts.filter(p => p['القسم'] === 'عروض اليوم');
+    // أول منتجات من كل قسم تظهر كعروض اليوم في الرئيسية
+    const offersProducts = allProducts.filter((p, idx) => idx % 8 === 0).slice(0, 10);
     
     if(offersProducts.length > 0) {
         const section = document.createElement('div');
         section.className = 'category-section';
         section.innerHTML = `
-            <div class="section-header"><h3>🔥 عروض اليوم</h3></div>
+            <div class="section-header"><h3>🔥 عروض اليوم المميزة</h3></div>
             <div class="products-grid">
                 ${offersProducts.map(p => getProductHTML(p)).join('')}
             </div>
@@ -118,7 +118,6 @@ function renderTodayOffers() {
     }
 }
 
-// عرض جميع الأقسام في صفحة الأقسام
 function renderAllCategories() {
     const container = document.getElementById('categories-sections');
     if(!container) return;
@@ -145,7 +144,7 @@ window.changeQty = function(id, delta) {
     if(input) {
         let val = parseInt(input.value) + delta;
         if(val < 1) val = 1;
-        if(val > 25) val > 25 ? val = 25 : null;
+        if(val > 25) val = 25;
         input.value = val;
     }
 }
@@ -154,12 +153,13 @@ window.changeQty = function(id, delta) {
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 window.toggleCart = function() {
-    document.getElementById('cart-sidebar').classList.toggle('open');
+    const sidebar = document.getElementById('cart-sidebar');
+    if(sidebar) sidebar.classList.toggle('open');
 }
 
 window.addToCart = function(id, name, price) {
     const input = document.getElementById(`qty-${id}`);
-    const qtyToAdd = parseInt(input.value) || 1;
+    const qtyToAdd = input ? (parseInt(input.value) || 1) : 1;
     
     const existing = cart.find(item => item.name === name);
     if (existing) {
@@ -168,21 +168,23 @@ window.addToCart = function(id, name, price) {
         cart.push({ name, price, qty: qtyToAdd });
     }
     
-    input.value = 1;
+    if(input) input.value = 1;
     saveCart(); 
     updateCartUI();
-    document.getElementById('cart-sidebar').classList.add('open');
+    toggleCart();
 }
 
 window.removeFromCart = function(name) {
     cart = cart.filter(item => item.name !== name);
-    saveCart(); updateCartUI();
+    saveCart(); 
+    updateCartUI();
 }
 
 window.clearCart = function() {
     if(confirm('هل أنت متأكد من إزالة كل الطلبات من السلة؟')) {
         cart = [];
-        saveCart(); updateCartUI();
+        saveCart(); 
+        updateCartUI();
     }
 }
 
@@ -206,7 +208,7 @@ function updateCartUI() {
             cartItemsDiv.innerHTML += `
                 <div class="cart-item">
                     <div>
-                        <strong style="color:var(--dark);">${item.name}</strong><br>
+                        <strong style="color:var(--text-color);">${item.name}</strong><br>
                         <small style="color:var(--secondary);">${item.qty} &times; ${item.price} ج</small>
                     </div>
                     <div style="text-align:left;">
@@ -229,4 +231,28 @@ function updateCartUI() {
     if(checkoutBtn) checkoutBtn.href = `https://wa.me/201063883209?text=${whatsappMsg}`;
 }
 
-window.onload = loadExcelData;
+// الوضع الليلي (Dark Mode)
+window.toggleTheme = function() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('theme-icon');
+    if(icon) {
+        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+}
+
+// تحميل الثيم المحفوظ عند الفتح
+(function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    window.addEventListener('DOMContentLoaded', () => {
+        updateThemeIcon(savedTheme);
+        loadExcelData();
+    });
+})();
