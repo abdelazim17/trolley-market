@@ -13,13 +13,16 @@
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
+        
         <div class="nav-links">
-            <a href="index.html">الرئيسية</a>
+            <a href="index.html" class="">الرئيسية</a>
             <a href="categories.html" class="active">الأقسام</a>
-            <a href="catalog.html">مجلة العروض</a>
-            <a href="about.html">حول الموقع</a>
+            <a href="catalog.html" class="">مجلة العروض</a>
+            <a href="about.html" class="">حول الموقع</a>
         </div>
+    
         <div class="actions-container">
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
                 <i class="fas fa-moon" id="theme-icon"></i>
@@ -30,8 +33,9 @@
         </div>
     </header>
 
+    
     <div style="padding: 20px 5% 5px 5%;">
-        <h1 style="margin-bottom: 15px; font-size: 2rem;">جميع الأقسام (9 أقسام)</h1>
+        <h1 style="margin-bottom: 15px; font-size: 2rem;">الأقسام</h1>
     </div>
 
     <!-- شريط الأقسام (الكل + 9 أقسام في سطر واحد) -->
@@ -42,6 +46,8 @@
         <div id="categories-sections"></div>
     </div>
 
+
+    <!-- الشريط الجانبي للسلة -->
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -56,6 +62,15 @@
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
+
+    
+    <nav class="bottom-nav">
+        <a href="index.html" class=""><i class="fas fa-home"></i><span>الرئيسية</span></a>
+        <a href="categories.html" class="active"><i class="fas fa-th-large"></i><span>الأقسام</span></a>
+        <a href="catalog.html" class=""><i class="fas fa-book-open"></i><span>المجلة</span></a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i><span>حول</span></a>
+    </nav>
+    
 
     <script src="app.js"></script>
 </body>

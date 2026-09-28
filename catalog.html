@@ -6,19 +6,23 @@
     <title>ترولي ماركت | مجلة العروض</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
+        
         <div class="nav-links">
-            <a href="index.html">الرئيسية</a>
-            <a href="categories.html">الأقسام</a>
+            <a href="index.html" class="">الرئيسية</a>
+            <a href="categories.html" class="">الأقسام</a>
             <a href="catalog.html" class="active">مجلة العروض</a>
-            <a href="about.html">حول الموقع</a>
+            <a href="about.html" class="">حول الموقع</a>
         </div>
+    
         <div class="actions-container">
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
                 <i class="fas fa-moon" id="theme-icon"></i>
@@ -29,9 +33,9 @@
         </div>
     </header>
 
+    
     <div class="catalog-container">
-        <h1 style="margin-bottom: 10px; font-size: 2.2rem;">📖 مجلة العروض الحصرية</h1>
-        <p style="margin-bottom: 30px; font-size: 1.1rem; opacity: 0.8;">تصفح صفحات المجلة الخمس وتعرف على أحدث العروض والخصومات</p>
+        <h1 style="margin-bottom: 10px; font-size: 2.2rem;">📖 مجلة العروض</h1>
         
         <div class="catalog-page">
             <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الأولى (1 / 5)</h2>
@@ -55,6 +59,8 @@
         </div>
     </div>
 
+
+    <!-- الشريط الجانبي للسلة -->
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -69,6 +75,15 @@
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
+
+    
+    <nav class="bottom-nav">
+        <a href="index.html" class=""><i class="fas fa-home"></i><span>الرئيسية</span></a>
+        <a href="categories.html" class=""><i class="fas fa-th-large"></i><span>الأقسام</span></a>
+        <a href="catalog.html" class="active"><i class="fas fa-book-open"></i><span>المجلة</span></a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i><span>حول</span></a>
+    </nav>
+    
 
     <script src="app.js"></script>
 </body>

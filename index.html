@@ -15,12 +15,14 @@
             <h2>ترولي ماركت</h2>
             <span>TROLLEY MARKET</span>
         </div>
+        
         <div class="nav-links">
             <a href="index.html" class="active">الرئيسية</a>
-            <a href="categories.html">الأقسام</a>
-            <a href="catalog.html">مجلة العروض</a>
-            <a href="about.html">حول الموقع</a>
+            <a href="categories.html" class="">الأقسام</a>
+            <a href="catalog.html" class="">مجلة العروض</a>
+            <a href="about.html" class="">حول الموقع</a>
         </div>
+    
         <div class="actions-container">
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
                 <i class="fas fa-moon" id="theme-icon"></i>
@@ -31,6 +33,7 @@
         </div>
     </header>
 
+    
     <!-- البانر الترحيبي -->
     <section class="welcome-banner">
         <div class="title">
@@ -42,13 +45,12 @@
         </div>
     </section>
 
-    <!-- سلايدر الأقسام المستطيل المتوسطن -->
-    <section class="banner-slider-container">
+    <!-- سلايدر الأقسام المستطيل (تم مسح النص وبقى كليكابل) -->
+    <section class="banner-slider-container" onclick="goToCategoryFromSlider()">
         <img id="slider-banner-img" src="images/cat_banner_0.jpg" alt="سلايدر القسم">
-        <div class="slider-caption" id="slider-banner-title">قسم الفواكه والخضار</div>
     </section>
 
-    <!-- 2 سلايدر مقسومين -->
+    <!-- 2 سلايدر مقسومين (جنب بعض في الموبايل) -->
     <section class="split-banners">
         <div class="half-banner"><img src="images/split1.jpg" alt="بانر يمين"></div>
         <div class="half-banner"><img src="images/split2.jpg" alt="بانر يسار"></div>
@@ -70,6 +72,7 @@
         <div id="home-sections"></div>
     </main>
 
+
     <!-- الشريط الجانبي للسلة -->
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
@@ -85,6 +88,15 @@
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
+
+    
+    <nav class="bottom-nav">
+        <a href="index.html" class="active"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+        <a href="categories.html" class=""><i class="fas fa-th-large"></i><span>الأقسام</span></a>
+        <a href="catalog.html" class=""><i class="fas fa-book-open"></i><span>المجلة</span></a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i><span>حول</span></a>
+    </nav>
+    
 
     <script src="app.js"></script>
 </body>

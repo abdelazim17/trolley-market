@@ -4,28 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | حول الموقع</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
+        
         <div class="nav-links">
-            <a href="index.html">الرئيسية</a>
-            <a href="categories.html">الأقسام</a>
-            <a href="catalog.html">مجلة العروض</a>
+            <a href="index.html" class="">الرئيسية</a>
+            <a href="categories.html" class="">الأقسام</a>
+            <a href="catalog.html" class="">مجلة العروض</a>
             <a href="about.html" class="active">حول الموقع</a>
         </div>
+    
         <div class="actions-container">
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
+            <button class="cart-btn" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
+            </button>
         </div>
     </header>
 
+    
     <div style="padding: 40px 5%; text-align: center; min-height: 70vh;">
         <h1 style="margin-bottom: 20px;">حول ترولي ماركت</h1>
         <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
@@ -42,15 +50,41 @@
             </div>
         </div>
     </div>
-
-    <script src="app.js"></script>
     <script>
         function copyLink() {
             const copyText = document.getElementById("site-url");
             copyText.select();
             document.execCommand("copy");
-            alert("تم نسخ رابط الموقع بنجاح!");
+            showToast("تم نسخ رابط الموقع بنجاح!");
         }
     </script>
+
+
+    <!-- الشريط الجانبي للسلة -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>سلة المشتريات</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
+            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
+                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
+            </a>
+            <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
+        </div>
+    </div>
+
+    
+    <nav class="bottom-nav">
+        <a href="index.html" class=""><i class="fas fa-home"></i><span>الرئيسية</span></a>
+        <a href="categories.html" class=""><i class="fas fa-th-large"></i><span>الأقسام</span></a>
+        <a href="catalog.html" class=""><i class="fas fa-book-open"></i><span>المجلة</span></a>
+        <a href="about.html" class="active"><i class="fas fa-info-circle"></i><span>حول</span></a>
+    </nav>
+    
+
+    <script src="app.js"></script>
 </body>
 </html>

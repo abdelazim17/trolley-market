@@ -36,6 +36,19 @@ function updateThemeIcon() {
     }
 }
 
+// التوست (رسالة التأكيد بدون فتح السلة)
+window.showToast = function(message) {
+    let toast = document.getElementById("toast");
+    if(!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        document.body.appendChild(toast);
+    }
+    toast.innerText = message;
+    toast.className = "show";
+    setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 2500);
+}
+
 async function loadExcelData() {
     try {
         const response = await fetch('products.xlsx');
@@ -66,7 +79,20 @@ async function loadExcelData() {
             startBannerSlider();
         } else if(isCategoriesPage) {
             initCategoryFilterBar();
-            renderCategoryProducts('الكل');
+            
+            // قراءة القسم المطلوب من السلايدر لو موجود
+            let targetCat = localStorage.getItem('targetCategory');
+            if(targetCat) {
+                localStorage.removeItem('targetCategory');
+                setTimeout(() => {
+                    const btns = document.querySelectorAll('.cat-filter-btn');
+                    btns.forEach(b => {
+                        if(b.innerText === targetCat) b.click();
+                    });
+                }, 100);
+            } else {
+                renderCategoryProducts('الكل');
+            }
         }
 
         updateCartUI();
@@ -81,26 +107,28 @@ async function loadExcelData() {
     }
 }
 
-// السلايدر المستطيل المتعدد للأقسام
+// السلايدر المستطيل (الدوران والانتقال للقسم)
 function startBannerSlider() {
     const imgElem = document.getElementById('slider-banner-img');
-    const titleElem = document.getElementById('slider-banner-title');
-    if(!imgElem || !titleElem) return;
+    if(!imgElem) return;
 
     setInterval(() => {
         currentSliderIndex = (currentSliderIndex + 1) % CATEGORIES.length;
-        const catName = CATEGORIES[currentSliderIndex];
-        
         imgElem.style.opacity = 0;
         setTimeout(() => {
             imgElem.src = `images/cat_banner_${currentSliderIndex}.jpg`;
-            titleElem.innerText = `قسم ${catName}`;
             imgElem.style.opacity = 1;
         }, 300);
     }, 3500);
 }
 
-// شريط تصفية الأقسام (الكل + 9 أقسام)
+window.goToCategoryFromSlider = function() {
+    const catName = CATEGORIES[currentSliderIndex];
+    localStorage.setItem('targetCategory', catName);
+    window.location.href = 'categories.html';
+}
+
+// شريط تصفية الأقسام
 function initCategoryFilterBar() {
     const bar = document.getElementById('category-filter-bar');
     if(!bar) return;
@@ -127,6 +155,10 @@ function initCategoryFilterBar() {
 function filterCategory(catName, btnElem) {
     document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
     btnElem.classList.add('active');
+    
+    // تمرير الزر ليكون مرئي
+    btnElem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    
     renderCategoryProducts(catName);
 }
 
@@ -143,7 +175,7 @@ function getProductHTML(p) {
     <div class="product-card">
         <img src="${imgSrc}" class="product-img" onerror="this.src='images/placeholder.png'">
         <div class="product-title">${p['الاسم']}</div>
-        <div class="price-container">${priceHTML} / ${p['الوحدة'] || 'وحدة'}</div>
+        <div class="price-container">${priceHTML}</div>
         
         <div class="qty-controls">
             <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
@@ -201,7 +233,7 @@ function renderCategoryProducts(selectedCat) {
         const section = document.createElement('div');
         section.className = 'category-section';
         section.innerHTML = `
-            <div class="section-header"><h3>${selectedCat} (${catProducts.length} منتج)</h3></div>
+            <div class="section-header"><h3>${selectedCat} (${catProducts.length})</h3></div>
             <div class="products-grid">
                 ${catProducts.map(p => getProductHTML(p)).join('')}
             </div>
@@ -242,7 +274,8 @@ window.addToCart = function(id, name, price) {
     if(input) input.value = 1;
     saveCart(); 
     updateCartUI();
-    toggleCart();
+    showToast("🛒 تمت الإضافة للسلة بنجاح!");
+    // تم إلغاء toggleCart() لعدم إزعاج المستخدم
 }
 
 window.removeFromCart = function(name) {
