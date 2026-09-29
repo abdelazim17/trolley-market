@@ -12,7 +12,6 @@
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
-            <span>TROLLEY MARKET</span>
         </div>
         <div class="nav-links">
             <a href="index.html">الرئيسية</a>
@@ -34,15 +33,28 @@
         <h1 style="margin-bottom: 10px; font-size: 2.2rem;">📖 مجلة العروض الحصرية</h1>
         <p style="margin-bottom: 30px; font-size: 1.1rem; opacity: 0.8;">تصفح صفحات المجلة الخمس وتعرف على أحدث العروض والخصومات</p>
         
-        <div class="catalog-page"><h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الأولى (1 / 5)</h2><img src="images/offer_page_1.jpg" alt="صفحة العروض 1" onerror="this.src='images/placeholder.png'"></div>
-        <div class="catalog-page"><h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثانية (2 / 5)</h2><img src="images/offer_page_2.jpg" alt="صفحة العروض 2" onerror="this.src='images/placeholder.png'"></div>
-        <div class="catalog-page"><h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثالثة (3 / 5)</h2><img src="images/offer_page_3.jpg" alt="صفحة العروض 3" onerror="this.src='images/placeholder.png'"></div>
-        <div class="catalog-page"><h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الرابعة (4 / 5)</h2><img src="images/offer_page_4.jpg" alt="صفحة العروض 4" onerror="this.src='images/placeholder.png'"></div>
-        <div class="catalog-page"><h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الخامسة (5 / 5)</h2><img src="images/offer_page_5.jpg" alt="صفحة العروض 5" onerror="this.src='images/placeholder.png'"></div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الأولى (1 / 5)</h2>
+            <img src="images/offer_page_1.jpg" alt="صفحة العروض 1" onerror="this.src='images/placeholder.png'">
+        </div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثانية (2 / 5)</h2>
+            <img src="images/offer_page_2.jpg" alt="صفحة العروض 2" onerror="this.src='images/placeholder.png'">
+        </div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثالثة (3 / 5)</h2>
+            <img src="images/offer_page_3.jpg" alt="صفحة العروض 3" onerror="this.src='images/placeholder.png'">
+        </div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الرابعة (4 / 5)</h2>
+            <img src="images/offer_page_4.jpg" alt="صفحة العروض 4" onerror="this.src='images/placeholder.png'">
+        </div>
+        <div class="catalog-page">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الخامسة (5 / 5)</h2>
+            <img src="images/offer_page_5.jpg" alt="صفحة العروض 5" onerror="this.src='images/placeholder.png'">
+        </div>
     </div>
 
-    <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
-    
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -57,6 +69,16 @@
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
+
+    
+    <!-- شريط التنقل السفلي للموبايل -->
+    <nav class="bottom-nav">
+        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="categories.html" class=""><i class="fas fa-th-list"></i>الأقسام</a>
+        <a href="catalog.html" class="active"><i class="fas fa-book-open"></i>مجلة العروض</a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
+    </nav>
+    
 
     <script src="app.js"></script>
 </body>
