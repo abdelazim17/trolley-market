@@ -58,7 +58,6 @@ async function loadExcelData() {
             } catch(e){}
         });
 
-        // Setup Favicon from settings
         if (allSettings['أيقونة الموقع']) {
             let link = document.querySelector("link[rel~='icon']");
             if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
@@ -165,7 +164,6 @@ function applyAboutSettings() {
     }
     if(document.getElementById('qr-website-img') && allSettings['صورة كيو آر الموقع']) document.getElementById('qr-website-img').src = allSettings['صورة كيو آر الموقع'];
     
-    // Social Links
     if(document.getElementById('fb-link') && allSettings['رابط فيسبوك']) document.getElementById('fb-link').href = allSettings['رابط فيسبوك'];
     if(document.getElementById('ig-link') && allSettings['رابط إنستجرام']) document.getElementById('ig-link').href = allSettings['رابط إنستجرام'];
     if(document.getElementById('wa-social-link') && allSettings['رابط الواتساب']) document.getElementById('wa-social-link').href = allSettings['رابط الواتساب'];
@@ -283,7 +281,6 @@ function updateCartUI() {
     else {
         cart.forEach(i => {
             total += i.price * i.qty;
-            // FIXED MATH DISPLAY ISSUE USING dir="ltr"
             div.innerHTML += `<div class="cart-item">
                 <div><strong>${i.name}</strong><br><small dir="ltr" style="display:inline-block;">${i.qty} x ${i.price} ج</small></div>
                 <div style="text-align:left;"><strong>${i.price * i.qty} ج</strong><br><button onclick="removeFromCart('${i.name}')" style="color:red;border:none;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button></div>
