@@ -58,6 +58,13 @@ async function loadExcelData() {
             } catch(e){}
         });
 
+        // Setup Favicon from settings
+        if (allSettings['أيقونة الموقع']) {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+            link.href = allSettings['أيقونة الموقع'];
+        }
+
         if(document.getElementById('loading')) document.getElementById('loading').style.display = 'none';
 
         const path = window.location.pathname;
@@ -80,9 +87,8 @@ async function loadExcelData() {
     } catch (error) {
         console.error("Error loading Excel:", error);
         if(document.getElementById('loading')) {
-            document.getElementById('loading').innerHTML = '<div style="color:red; font-size:1.2rem; padding: 20px;">خطأ: تأكد من رفع ملف data.xlsx بشكل صحيح في مجلد الموقع!</div>';
+            document.getElementById('loading').innerHTML = '<div style="color:red; font-size:1.2rem; padding: 20px;">خطأ: تأكد من رفع ملف data.xlsx بشكل صحيح!</div>';
         }
-        // Fallback for About page to remove "جاري التحميل" if it completely fails
         if(window.location.pathname.includes('about')) applyAboutSettings(); 
     }
 }
@@ -111,7 +117,6 @@ function startBannerSlider() {
                     badgeElem.style.display = 'none';
                 }
             }
-            
             sliderLink.onclick = (e) => {
                 e.preventDefault();
                 if(slide['القسم_المستهدف']) {
@@ -124,13 +129,11 @@ function startBannerSlider() {
     }
     
     showSlide();
-    setInterval(() => {
-        currentSliderIndex = (currentSliderIndex + 1) % sliderData.length;
-        showSlide();
-    }, 4000); // 4 seconds
+    setInterval(() => { currentSliderIndex = (currentSliderIndex + 1) % sliderData.length; showSlide(); }, 4000);
 }
 
 function applyBanners() {
+    if(bannersData['رئيسي_علوي'] && document.getElementById('top-banner-img')) document.getElementById('top-banner-img').src = bannersData['رئيسي_علوي'];
     if(bannersData['مقسم_يمين'] && document.getElementById('split1-img')) document.getElementById('split1-img').src = bannersData['مقسم_يمين'];
     if(bannersData['مقسم_يسار'] && document.getElementById('split2-img')) document.getElementById('split2-img').src = bannersData['مقسم_يسار'];
     if(bannersData['رئيسي_ثابت'] && document.getElementById('main-banner-img')) document.getElementById('main-banner-img').src = bannersData['رئيسي_ثابت'];
@@ -140,18 +143,11 @@ function renderCatalog() {
     const container = document.getElementById('catalog-pages-container');
     if(!container) return;
     container.innerHTML = '';
-    
     if(catalogData.length === 0) {
-        container.innerHTML = '<p>لا توجد صور في مجلة العروض حالياً. تأكد من إضافة بيانات في شيت (مجلة العروض).</p>';
-        return;
+        container.innerHTML = '<p>لا توجد صور في مجلة العروض حالياً.</p>'; return;
     }
-    
     catalogData.forEach(page => {
-        container.innerHTML += `
-            <div class="catalog-page">
-                <img src="${page['صورة']}" alt="صفحة ${page['رقم_الصفحة']}" onerror="this.src='images/placeholder.png'">
-            </div>
-        `;
+        container.innerHTML += `<div class="catalog-page"><img src="${page['صورة']}" alt="صفحة ${page['رقم_الصفحة']}" onerror="this.src='images/placeholder.png'"></div>`;
     });
 }
 
@@ -168,14 +164,19 @@ function applyAboutSettings() {
         if(link !== 'غير متوفر') document.getElementById('website-link').href = link;
     }
     if(document.getElementById('qr-website-img') && allSettings['صورة كيو آر الموقع']) document.getElementById('qr-website-img').src = allSettings['صورة كيو آر الموقع'];
+    
+    // Social Links
+    if(document.getElementById('fb-link') && allSettings['رابط فيسبوك']) document.getElementById('fb-link').href = allSettings['رابط فيسبوك'];
+    if(document.getElementById('ig-link') && allSettings['رابط إنستجرام']) document.getElementById('ig-link').href = allSettings['رابط إنستجرام'];
+    if(document.getElementById('wa-social-link') && allSettings['رابط الواتساب']) document.getElementById('wa-social-link').href = allSettings['رابط الواتساب'];
 }
 
 window.shareWebsite = function() {
     const url = allSettings['رابط الموقع'] || window.location.href;
     if (navigator.share) {
-        navigator.share({ title: 'ترولي ماركت', text: 'تسوق أفضل العروض والمنتجات من ترولي ماركت!', url: url }).catch(console.error);
+        navigator.share({ title: 'ترولي ماركت', text: 'تسوق أفضل العروض والمنتجات!', url: url }).catch(console.error);
     } else {
-        alert('ميزة المشاركة غير مدعومة في هذا المتصفح، يمكنك نسخ هذا الرابط: ' + url);
+        alert('يمكنك نسخ هذا الرابط: ' + url);
     }
 }
 
@@ -282,7 +283,11 @@ function updateCartUI() {
     else {
         cart.forEach(i => {
             total += i.price * i.qty;
-            div.innerHTML += `<div class="cart-item"><div><strong>${i.name}</strong><br><small>${i.qty} x ${i.price} ج</small></div><div style="text-align:left;"><strong>${i.price * i.qty} ج</strong><br><button onclick="removeFromCart('${i.name}')" style="color:red;border:none;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button></div></div>`;
+            // FIXED MATH DISPLAY ISSUE USING dir="ltr"
+            div.innerHTML += `<div class="cart-item">
+                <div><strong>${i.name}</strong><br><small dir="ltr" style="display:inline-block;">${i.qty} x ${i.price} ج</small></div>
+                <div style="text-align:left;"><strong>${i.price * i.qty} ج</strong><br><button onclick="removeFromCart('${i.name}')" style="color:red;border:none;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button></div>
+            </div>`;
         });
     }
     const totalSpan = document.getElementById('total-price');

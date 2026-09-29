@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | الرئيسية</title>
+    <!-- Favicon is now dynamic via JS, but we keep a fallback -->
     <link rel="icon" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,19 +37,37 @@
     </header>
 
     
+    <!-- Top Static Banner before slider -->
+    <section class="static-banner top-main-banner"><img id="top-banner-img" src="images/placeholder.png"></section>
+    
     <a href="#" id="slider-link">
         <section class="banner-slider-container">
             <img id="slider-banner-img" src="images/placeholder.png">
             <div id="slider-cat-name" class="glass-badge"></div>
         </section>
     </a>
-    <section class="split-banners"><div class="half-banner"><img id="split1-img" src="images/placeholder.png"></div><div class="half-banner"><img id="split2-img" src="images/placeholder.png"></div></section>
+    
+    <section class="split-banners">
+        <div class="half-banner"><img id="split1-img" src="images/placeholder.png"></div>
+        <div class="half-banner"><img id="split2-img" src="images/placeholder.png"></div>
+    </section>
+    
     <section class="static-banner"><img id="main-banner-img" src="images/placeholder.png"></section>
+    
     <main class="products-section">
         <div id="loading" style="text-align:center; padding: 20px; font-size:1.5rem;"><i class="fas fa-spinner fa-spin"></i> جاري قراءة ملف الإكسيل...</div>
         <div id="home-sections"></div>
     </main>
 
+
+    <div class="mobile-bottom-nav">
+        
+        <a href="index.html" class="active"><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="categories.html" class=""><i class="fas fa-th-large"></i>الأقسام</a>
+        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>المجلة</a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
+    
+    </div>
 
     <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
     
