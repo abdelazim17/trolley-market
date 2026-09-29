@@ -31,7 +31,6 @@
         </div>
     </header>
 
-    <!-- البانر الترحيبي -->
     <section class="welcome-banner">
         <div class="title">
             <h2>كل طلبات</h2>
@@ -42,35 +41,34 @@
         </div>
     </section>
 
-    <!-- سلايدر الأقسام المستطيل (قابل للضغط وينقل للقسم المختار) -->
-    <section class="banner-slider-container" onclick="goToSliderCategory()" title="اضغط للذهاب للقسم">
-        <img id="slider-banner-img" src="images/cat_banner_0.jpg" alt="سلايدر القسم">
-        <div class="slider-caption" id="slider-banner-title">الفواكه والخضار</div>
-    </section>
+    <!-- Slider (قابل للنقر) -->
+    <a href="#" id="slider-link">
+        <section class="banner-slider-container">
+            <img id="slider-banner-img" src="images/placeholder.png" alt="سلايدر القسم">
+            <div class="slider-caption" id="slider-banner-title">جاري التحميل...</div>
+        </section>
+    </a>
 
-    <!-- 2 بانر مقسومين -->
+    <!-- Split Banners -->
     <section class="split-banners">
-        <div class="half-banner"><img src="images/split1.jpg" alt="بانر يمين"></div>
-        <div class="half-banner"><img src="images/split2.jpg" alt="بانر يسار"></div>
+        <div class="half-banner"><img id="split1-img" src="images/placeholder.png" alt="بانر يمين"></div>
+        <div class="half-banner"><img id="split2-img" src="images/placeholder.png" alt="بانر يسار"></div>
     </section>
 
-    <!-- سلايدر كبير ثابت -->
     <section class="static-banner">
-        <img src="images/static_banner.jpg" alt="بانر رئيسي ثابت">
+        <img id="main-banner-img" src="images/placeholder.png" alt="بانر رئيسي">
     </section>
-
-    <div id="error-box" class="error-msg">
-        حدثت مشكلة في قراءة ملف الإكسيل (products.xlsx). تأكد أن الملف موجود ومرفوع بشكل صحيح!
-    </div>
     
     <main class="products-section">
         <div id="loading" style="text-align:center; padding: 20px; font-weight:bold; font-size:1.5rem; color:var(--primary);">
-            <i class="fas fa-spinner fa-spin"></i> جاري تحميل العروض...
+            <i class="fas fa-spinner fa-spin"></i> جاري قراءة ملف الإكسيل...
         </div>
         <div id="home-sections"></div>
     </main>
 
-    <!-- الشريط الجانبي للسلة -->
+    <!-- Cart & Toast -->
+    <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
+    
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -85,16 +83,6 @@
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
-    
-    
-    <!-- شريط التنقل السفلي للموبايل -->
-    <nav class="bottom-nav">
-        <a href="index.html" class="active"><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html" class=""><i class="fas fa-th-list"></i>الأقسام</a>
-        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>مجلة العروض</a>
-        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
-    </nav>
-    
 
     <script src="app.js"></script>
 </body>

@@ -13,6 +13,7 @@
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
         <div class="nav-links">
             <a href="index.html">الرئيسية</a>
@@ -30,19 +31,17 @@
         </div>
     </header>
 
-    <div style="padding: 20px 5% 5px 5%;">
-        <h1 style="margin-bottom: 15px; font-size: 2rem;">الأقسام</h1>
-    </div>
-
-    <!-- شريط الأقسام (الكل + 9 أقسام في سطر واحد) -->
     <div class="category-filter-bar" id="category-filter-bar"></div>
 
     <div class="page-container" style="padding: 0 5%;">
-        <div id="loading" style="text-align:center; font-weight:bold; font-size:1.2rem;">جاري تحميل الأقسام...</div>
+        <div id="loading" style="text-align:center; padding:20px; font-weight:bold; font-size:1.2rem;">جاري تحميل الأقسام...</div>
         <div id="categories-sections"></div>
     </div>
 
+    <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
+    
     <div class="cart-sidebar" id="cart-sidebar">
+        <!-- نفس تركيبة السلة -->
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
             <button class="close-cart" onclick="toggleCart()">&times;</button>
@@ -50,22 +49,10 @@
         <div class="cart-items" id="cart-items"></div>
         <div class="cart-footer">
             <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
-            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
-                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
-            </a>
+            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn"><i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب</a>
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
-
-    
-    <!-- شريط التنقل السفلي للموبايل -->
-    <nav class="bottom-nav">
-        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html" class="active"><i class="fas fa-th-list"></i>الأقسام</a>
-        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>مجلة العروض</a>
-        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
-    </nav>
-    
 
     <script src="app.js"></script>
 </body>
