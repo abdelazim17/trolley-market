@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | الأقسام</title>
+    <!-- الأيقونة المضافة هنا -->
+    <link rel="icon" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -13,60 +15,41 @@
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
         <div class="nav-links">
-            <a href="index.html">الرئيسية</a>
-            <a href="categories.html" class="active">الأقسام</a>
-            <a href="catalog.html">مجلة العروض</a>
-            <a href="about.html">حول</a>
+            
+        <a href="index.html" class="">الرئيسية</a>
+        <a href="categories.html" class="active">الأقسام</a>
+        <a href="catalog.html" class="">مجلة العروض</a>
+        <a href="about.html" class="">حول</a>
+    
         </div>
         <div class="actions-container">
-            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </button>
-            <button class="cart-btn" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
-            </button>
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+            <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span></button>
         </div>
     </header>
 
-    <div style="padding: 20px 5% 5px 5%;">
-        <h1 style="margin-bottom: 15px; font-size: 2rem;">الأقسام</h1>
-    </div>
-
-    <!-- شريط الأقسام (الكل + 9 أقسام في سطر واحد) -->
+    
     <div class="category-filter-bar" id="category-filter-bar"></div>
-
-    <div class="page-container" style="padding: 0 5%;">
-        <div id="loading" style="text-align:center; font-weight:bold; font-size:1.2rem;">جاري تحميل الأقسام...</div>
+    <main class="products-section">
+        <div id="loading" style="text-align:center; padding: 20px; font-size:1.5rem;"><i class="fas fa-spinner fa-spin"></i> جاري قراءة ملف الإكسيل...</div>
         <div id="categories-sections"></div>
-    </div>
+    </main>
 
+
+    <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
+    
     <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>سلة المشتريات</h3>
-            <button class="close-cart" onclick="toggleCart()">&times;</button>
-        </div>
+        <div class="cart-header"><h3>سلة المشتريات</h3><button class="close-cart" onclick="toggleCart()">&times;</button></div>
         <div class="cart-items" id="cart-items"></div>
         <div class="cart-footer">
-            <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
-            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
-                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
-            </a>
+            <div style="font-size:1.2rem;font-weight:bold;margin-bottom:15px;text-align:center;">الإجمالي: <span id="total-price">0</span> جنيه</div>
+            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn"><i class="fab fa-whatsapp"></i> إرسال الطلب واتساب</a>
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
-
-    
-    <!-- شريط التنقل السفلي للموبايل -->
-    <nav class="bottom-nav">
-        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html" class="active"><i class="fas fa-th-list"></i>الأقسام</a>
-        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>مجلة العروض</a>
-        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
-    </nav>
-    
-
     <script src="app.js"></script>
 </body>
 </html>

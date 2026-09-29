@@ -1,173 +1,205 @@
-const CATEGORIES = [
-    "الفواكه والخضار", "التسالي والمكسرات", "المشروبات",
-    "البقالة", "الألبان", "المخبوزات",
-    "التوابل والبهارات", "الحلويات والكاندي", "المنظفات"
-];
 
+let allOffers = [];
 let allProducts = [];
+let CATEGORIES = [];
+let sliderData = [];
+let bannersData = {};
+let catalogData = [];
+let allSettings = {};
 let currentSliderIndex = 0;
 
-// نظام الوضع الليلي المضبوط برمجيًا بالكامل
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-    } else {
-        document.body.classList.remove('dark-mode');
-    }
+    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     updateThemeIcon();
 }
 
 window.toggleTheme = function() {
     document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     updateThemeIcon();
 }
 
 function updateThemeIcon() {
     const icon = document.getElementById('theme-icon');
-    if (icon) {
-        if (document.body.classList.contains('dark-mode')) {
-            icon.className = 'fas fa-sun';
-        } else {
-            icon.className = 'fas fa-moon';
-        }
-    }
+    if (icon) icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
 }
 
 async function loadExcelData() {
     try {
-        const response = await fetch('products.xlsx');
-        if (!response.ok) throw new Error('Network response was not ok');
-        
+        const response = await fetch('data.xlsx');
+        if (!response.ok) throw new Error('File not found');
         const arrayBuffer = await response.arrayBuffer();
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
         
-        allProducts = jsonData.filter(item => item['متوفر'] === 'نعم');
-        allProducts.forEach((p, idx) => p.id = 'prod_' + idx);
-        
-        const loading = document.getElementById('loading');
-        if(loading) loading.style.display = 'none';
-        
-        if(allProducts.length === 0) {
-            document.getElementById('error-box').innerHTML = "ملف الإكسيل موجود ولكنه فارغ أو لا يوجد منتجات متوفرة.";
-            document.getElementById('error-box').style.display = 'block';
-            return;
+        // 1. Slider
+        if(workbook.Sheets['السلايدر']) sliderData = XLSX.utils.sheet_to_json(workbook.Sheets['السلايدر']);
+        // 2. Banners
+        if(workbook.Sheets['البنرات']) {
+            let b = XLSX.utils.sheet_to_json(workbook.Sheets['البنرات']);
+            b.forEach(item => bannersData[item['مكان_البانر']] = item['صورة']);
         }
+        // 3. Offers
+        if(workbook.Sheets['عروض اليوم']) {
+            allOffers = XLSX.utils.sheet_to_json(workbook.Sheets['عروض اليوم']).filter(i => i['متوفر'] !== 'لا');
+            allOffers.forEach(p => p.id = 'off_' + Math.random().toString(36).substr(2, 9));
+        }
+        // 4. Catalog
+        if(workbook.Sheets['مجلة العروض']) catalogData = XLSX.utils.sheet_to_json(workbook.Sheets['مجلة العروض']);
+        // 5. Settings
+        if(workbook.Sheets['الإعدادات']) {
+            let s = XLSX.utils.sheet_to_json(workbook.Sheets['الإعدادات']);
+            s.forEach(item => allSettings[item['الإعداد']] = item['القيمة']);
+        }
+        
+        // 6. Dynamic Categories (Every sheet except the core ones)
+        const excludeSheets = ['السلايدر', 'البنرات', 'عروض اليوم', 'مجلة العروض', 'الإعدادات'];
+        CATEGORIES = workbook.SheetNames.filter(name => !excludeSheets.includes(name));
+        
+        CATEGORIES.forEach(cat => {
+            let catProds = XLSX.utils.sheet_to_json(workbook.Sheets[cat]).filter(i => i['متوفر'] !== 'لا');
+            catProds.forEach(p => {
+                p['القسم'] = cat;
+                p.id = 'prod_' + Math.random().toString(36).substr(2, 9);
+            });
+            allProducts = allProducts.concat(catProds);
+        });
 
-        const isHomePage = window.location.pathname.includes('index') || window.location.pathname.endsWith('/');
-        const isCategoriesPage = window.location.pathname.includes('categories');
+        if(document.getElementById('loading')) document.getElementById('loading').style.display = 'none';
 
-        if(isHomePage) {
+        const path = window.location.pathname;
+        if(path.includes('index') || path.endsWith('/')) {
             renderTodayOffers();
             startBannerSlider();
-        } else if(isCategoriesPage) {
+            applyBanners();
+        } else if(path.includes('categories')) {
             initCategoryFilterBar();
-            // التحقق إذا كان هناك قسم محدد مسبقا في الرابط (من ضغطة السلايدر)
-            const urlParams = new URLSearchParams(window.location.search);
-            const catParam = urlParams.get('cat');
-            if (catParam && CATEGORIES.includes(catParam)) {
-                const btnId = 'btn-cat-' + CATEGORIES.indexOf(catParam);
-                const btn = document.getElementById(btnId);
-                if(btn) filterCategory(catParam, btn);
-                else renderCategoryProducts('الكل');
-            } else {
-                renderCategoryProducts('الكل');
-            }
+            let targetCat = localStorage.getItem('selectedCategory') || 'الكل';
+            localStorage.removeItem('selectedCategory');
+            filterCategory(targetCat);
+        } else if(path.includes('about')) {
+            applyAboutSettings();
+        } else if(path.includes('catalog')) {
+            renderCatalog();
         }
 
         updateCartUI();
-
     } catch (error) {
-        console.error("خطأ في التحميل:", error);
-        const loading = document.getElementById('loading');
-        if(loading) loading.style.display = 'none';
-        
-        const errorBox = document.getElementById('error-box');
-        if(errorBox) errorBox.style.display = 'block';
+        console.error("Error loading Excel:", error);
+        if(document.getElementById('loading')) document.getElementById('loading').innerHTML = 'خطأ في تحميل ملف الإكسيل data.xlsx';
     }
 }
 
-// السلايدر المستطيل التلقائي
 function startBannerSlider() {
+    const sliderLink = document.getElementById('slider-link');
     const imgElem = document.getElementById('slider-banner-img');
-    const titleElem = document.getElementById('slider-banner-title');
-    if(!imgElem || !titleElem) return;
+    if(!imgElem || sliderData.length === 0) {
+        if(imgElem) imgElem.parentElement.style.display = 'none';
+        return;
+    }
 
-    setInterval(() => {
-        currentSliderIndex = (currentSliderIndex + 1) % CATEGORIES.length;
-        const catName = CATEGORIES[currentSliderIndex];
-        
+    function showSlide() {
+        const slide = sliderData[currentSliderIndex];
         imgElem.style.opacity = 0;
         setTimeout(() => {
-            imgElem.src = `images/cat_banner_${currentSliderIndex}.jpg`;
-            titleElem.innerText = `${catName}`;
+            imgElem.src = slide['صورة'] || 'images/placeholder.png';
+            sliderLink.onclick = (e) => {
+                e.preventDefault();
+                if(slide['القسم_المستهدف']) {
+                    localStorage.setItem('selectedCategory', slide['القسم_المستهدف']);
+                    window.location.href = 'categories.html';
+                }
+            };
             imgElem.style.opacity = 1;
         }, 300);
+    }
+    showSlide();
+    setInterval(() => {
+        currentSliderIndex = (currentSliderIndex + 1) % sliderData.length;
+        showSlide();
     }, 3500);
 }
 
-// دالة للانتقال للقسم من ضغطة السلايدر
-window.goToSliderCategory = function() {
-    const catName = CATEGORIES[currentSliderIndex];
-    window.location.href = 'categories.html?cat=' + encodeURIComponent(catName);
+function applyBanners() {
+    if(bannersData['مقسم_يمين'] && document.getElementById('split1-img')) document.getElementById('split1-img').src = bannersData['مقسم_يمين'];
+    if(bannersData['مقسم_يسار'] && document.getElementById('split2-img')) document.getElementById('split2-img').src = bannersData['مقسم_يسار'];
+    if(bannersData['رئيسي_ثابت'] && document.getElementById('main-banner-img')) document.getElementById('main-banner-img').src = bannersData['رئيسي_ثابت'];
 }
 
-// شريط تصفية الأقسام (الكل + 9 أقسام)
-function initCategoryFilterBar() {
-    const bar = document.getElementById('category-filter-bar');
-    if(!bar) return;
-
-    bar.innerHTML = '';
-
-    // زر الكل
-    const allBtn = document.createElement('button');
-    allBtn.className = 'cat-filter-btn active';
-    allBtn.innerText = 'الكل';
-    allBtn.onclick = () => filterCategory('الكل', allBtn);
-    bar.appendChild(allBtn);
-
-    // الأقسام التسعة
-    CATEGORIES.forEach((cat, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'cat-filter-btn';
-        btn.innerText = cat;
-        btn.id = 'btn-cat-' + index;
-        btn.onclick = () => filterCategory(cat, btn);
-        bar.appendChild(btn);
+function renderCatalog() {
+    const container = document.getElementById('catalog-pages-container');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    catalogData.forEach(page => {
+        container.innerHTML += `
+            <div class="catalog-page">
+                <img src="${page['صورة']}" alt="صفحة ${page['رقم_الصفحة']}" onerror="this.src='images/placeholder.png'">
+            </div>
+        `;
     });
 }
 
-function filterCategory(catName, btnElem) {
-    document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
-    if(btnElem) btnElem.classList.add('active');
-    renderCategoryProducts(catName);
+function applyAboutSettings() {
+    if(allSettings['رقم الواتساب'] && document.getElementById('wa-number')) {
+        document.getElementById('wa-number').innerText = allSettings['رقم الواتساب'];
+    }
+    if(allSettings['رابط الواتساب'] && document.getElementById('wa-link')) {
+        document.getElementById('wa-link').href = allSettings['رابط الواتساب'];
+    }
+    if(allSettings['صورة كيو آر الواتساب'] && document.getElementById('qr-whatsapp-img')) {
+        document.getElementById('qr-whatsapp-img').src = allSettings['صورة كيو آر الواتساب'];
+    }
+    if(allSettings['رابط الموقع'] && document.getElementById('website-link')) {
+        document.getElementById('website-link').innerText = allSettings['رابط الموقع'];
+        document.getElementById('website-link').href = allSettings['رابط الموقع'];
+    }
+    if(allSettings['صورة كيو آر الموقع'] && document.getElementById('qr-website-img')) {
+        document.getElementById('qr-website-img').src = allSettings['صورة كيو آر الموقع'];
+    }
+}
+
+window.shareWebsite = function() {
+    const url = allSettings['رابط الموقع'] || window.location.href;
+    if (navigator.share) {
+        navigator.share({
+            title: 'ترولي ماركت',
+            text: 'تسوق أفضل العروض والمنتجات من ترولي ماركت! أسرع دليفري لحد باب البيت.',
+            url: url
+        }).catch(console.error);
+    } else {
+        alert('ميزة المشاركة غير مدعومة في هذا المتصفح، يمكنك نسخ هذا الرابط: ' + url);
+    }
 }
 
 function getProductHTML(p) {
-    let hasOffer = p['السعر بعد الخصم'] && p['السعر بعد الخصم'] !== '';
-    let priceHTML = hasOffer ? 
-        `<span class="new-price">${p['السعر بعد الخصم']} ج</span> <span class="old-price">${p['السعر الأساسي']} ج</span>` :
-        `<span class="new-price">${p['السعر الأساسي']} ج</span>`;
+    let oldP = p['السعر الأساسي'];
+    let newP = p['السعر بعد الخصم'];
+    let hasOffer = newP && newP !== '';
+    let priceHTML = '';
+    let badgeHTML = '';
+    
+    if (hasOffer && oldP > newP) {
+        let discountPct = Math.round(((oldP - newP) / oldP) * 100);
+        badgeHTML = `<div class="discount-badge">خصم ${discountPct}%</div>`;
+        priceHTML = `<span class="new-price">${newP} ج</span> <span class="old-price">${oldP} ج</span>`;
+    } else {
+        priceHTML = `<span class="new-price">${oldP} ج</span>`;
+    }
         
-    let currentPrice = hasOffer ? p['السعر بعد الخصم'] : p['السعر الأساسي'];
-    let imgSrc = p['الصورة'] && p['الصورة'] !== 'images/placeholder.png' ? p['الصورة'] : 'images/placeholder.png';
+    let currentPrice = hasOffer ? newP : oldP;
+    let imgSrc = p['صورة'] || 'images/placeholder.png';
 
     return `
     <div class="product-card">
+        ${badgeHTML}
         <img src="${imgSrc}" class="product-img" onerror="this.src='images/placeholder.png'">
         <div class="product-title">${p['الاسم']}</div>
         <div class="price-container">${priceHTML} / ${p['الوحدة'] || 'وحدة'}</div>
-        
         <div class="qty-controls">
             <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
             <input type="number" id="qty-${p.id}" class="qty-input" value="1" readonly>
             <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
         </div>
-        
         <button class="add-to-cart-btn" onclick="addToCart('${p.id}', '${p['الاسم']}', ${currentPrice})">إضافة للسلة</button>
     </div>
     `;
@@ -177,24 +209,29 @@ function renderTodayOffers() {
     const container = document.getElementById('home-sections');
     if(!container) return;
     container.innerHTML = '';
-    
-    // أخذنا 14 منتج بدلا من 10 لتوسيع قسم العروض كما طلبت
-    const offersProducts = allProducts.filter((p, idx) => idx % 6 === 0).slice(0, 14);
-    
-    if(offersProducts.length > 0) {
-        const section = document.createElement('div');
-        section.className = 'category-section';
-        section.innerHTML = `
-            <div class="section-header"><h3>🔥 عروض اليوم المميزة</h3></div>
-            <div class="products-grid">
-                ${offersProducts.map(p => getProductHTML(p)).join('')}
-            </div>
+    if(allOffers.length > 0) {
+        container.innerHTML = `
+            <div class="section-header"><h3>🔥 عروض اليوم</h3></div>
+            <div class="products-grid">${allOffers.map(p => getProductHTML(p)).join('')}</div>
         `;
-        container.appendChild(section);
     }
 }
 
-function renderCategoryProducts(selectedCat) {
+function initCategoryFilterBar() {
+    const bar = document.getElementById('category-filter-bar');
+    if(!bar) return;
+    bar.innerHTML = `<button class="cat-filter-btn" id="btn-cat-الكل" onclick="filterCategory('الكل')">الكل</button>`;
+    CATEGORIES.forEach(cat => {
+        bar.innerHTML += `<button class="cat-filter-btn" id="btn-cat-${cat}" onclick="filterCategory('${cat}')">${cat}</button>`;
+    });
+}
+
+window.filterCategory = function(selectedCat) {
+    document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
+    let btn = document.getElementById('btn-cat-' + selectedCat);
+    if(btn) btn.classList.add('active');
+    else if(document.getElementById('btn-cat-الكل')) document.getElementById('btn-cat-الكل').classList.add('active');
+
     const container = document.getElementById('categories-sections');
     if(!container) return;
     container.innerHTML = '';
@@ -203,135 +240,69 @@ function renderCategoryProducts(selectedCat) {
         CATEGORIES.forEach(cat => {
             const catProducts = allProducts.filter(p => p['القسم'] === cat);
             if(catProducts.length > 0) {
-                const section = document.createElement('div');
-                section.className = 'category-section';
-                section.innerHTML = `
+                container.innerHTML += `<div class="category-section">
                     <div class="section-header"><h3>${cat}</h3></div>
-                    <div class="products-grid">
-                        ${catProducts.map(p => getProductHTML(p)).join('')}
-                    </div>
-                `;
-                container.appendChild(section);
+                    <div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div>
+                </div>`;
             }
         });
     } else {
         const catProducts = allProducts.filter(p => p['القسم'] === selectedCat);
-        const section = document.createElement('div');
-        section.className = 'category-section';
-        // شلنا عدد المنتجات من الاسم عشان يبقى أنظف وأبسط
-        section.innerHTML = `
+        container.innerHTML = `<div class="category-section">
             <div class="section-header"><h3>${selectedCat}</h3></div>
-            <div class="products-grid">
-                ${catProducts.map(p => getProductHTML(p)).join('')}
-            </div>
-        `;
-        container.appendChild(section);
+            <div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div>
+        </div>`;
     }
 }
 
+// Cart Logic
 window.changeQty = function(id, delta) {
     const input = document.getElementById(`qty-${id}`);
     if(input) {
         let val = parseInt(input.value) + delta;
-        if(val < 1) val = 1;
-        if(val > 25) val = 25;
+        if(val < 1) val = 1; if(val > 25) val = 25;
         input.value = val;
     }
 }
-
-// السلة
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-window.toggleCart = function() {
-    const sidebar = document.getElementById('cart-sidebar');
-    if(sidebar) sidebar.classList.toggle('open');
-}
-
+window.toggleCart = function() { document.getElementById('cart-sidebar').classList.toggle('open'); }
 window.addToCart = function(id, name, price) {
     const input = document.getElementById(`qty-${id}`);
     const qtyToAdd = input ? (parseInt(input.value) || 1) : 1;
-    
-    const existing = cart.find(item => item.name === name);
-    if (existing) {
-        existing.qty += qtyToAdd;
-    } else {
-        cart.push({ name, price, qty: qtyToAdd });
-    }
-    
+    const existing = cart.find(i => i.name === name);
+    if (existing) existing.qty += qtyToAdd; else cart.push({ name, price, qty: qtyToAdd });
     if(input) input.value = 1;
-    saveCart(); 
-    updateCartUI();
-    
-    // تم إلغاء فتح السلة التلقائي بناء على طلبك
-    // toggleCart(); 
-    
-    // تنبيه بصري خفيف بدلا من فتح السلة
-    const cartBtn = document.querySelector('.cart-btn');
-    if(cartBtn) {
-        cartBtn.style.transform = 'scale(1.1)';
-        setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
-    }
+    saveCart(); updateCartUI();
+    const toast = document.getElementById('toast-msg');
+    if(toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
 }
-
-window.removeFromCart = function(name) {
-    cart = cart.filter(item => item.name !== name);
-    saveCart(); 
-    updateCartUI();
-}
-
-window.clearCart = function() {
-    if(confirm('هل أنت متأكد من إزالة كل الطلبات من السلة؟')) {
-        cart = [];
-        saveCart(); 
-        updateCartUI();
-    }
-}
-
+window.removeFromCart = function(name) { cart = cart.filter(i => i.name !== name); saveCart(); updateCartUI(); }
+window.clearCart = function() { if(confirm('متأكد من تفريغ السلة؟')) { cart = []; saveCart(); updateCartUI(); } }
 function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
-
 function updateCartUI() {
-    const cartCount = document.getElementById('cart-count');
-    if(cartCount) cartCount.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-    
-    const cartItemsDiv = document.getElementById('cart-items');
-    if(!cartItemsDiv) return;
-    
-    cartItemsDiv.innerHTML = '';
+    const count = document.getElementById('cart-count');
+    if(count) count.innerText = cart.reduce((sum, i) => sum + i.qty, 0);
+    const div = document.getElementById('cart-items');
+    if(!div) return;
+    div.innerHTML = '';
     let total = 0;
-    
-    if(cart.length === 0) {
-        cartItemsDiv.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">السلة فارغة</p>';
-    } else {
-        cart.forEach(item => {
-            total += item.price * item.qty;
-            cartItemsDiv.innerHTML += `
-                <div class="cart-item">
-                    <div>
-                        <strong style="color:var(--text-color);">${item.name}</strong><br>
-                        <small style="color:var(--secondary);">${item.qty} &times; ${item.price} ج</small>
-                    </div>
-                    <div style="text-align:left;">
-                        <strong style="color:var(--primary);">${item.price * item.qty} ج</strong><br>
-                        <button onclick="removeFromCart('${item.name}')" style="background:none; border:none; color:red; cursor:pointer; font-size:0.9rem; margin-top:5px;"><i class="fas fa-trash"></i> حذف</button>
-                    </div>
-                </div>
-            `;
+    if(cart.length === 0) { div.innerHTML = '<p style="text-align:center;color:#999;margin-top:20px;">السلة فارغة</p>'; } 
+    else {
+        cart.forEach(i => {
+            total += i.price * i.qty;
+            div.innerHTML += `<div class="cart-item">
+                <div><strong>${i.name}</strong><br><small>${i.qty} x ${i.price} ج</small></div>
+                <div style="text-align:left;"><strong>${i.price * i.qty} ج</strong><br><button onclick="removeFromCart('${i.name}')" style="color:red;border:none;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button></div>
+            </div>`;
         });
     }
-    
-    const totalPriceSpan = document.getElementById('total-price');
-    if(totalPriceSpan) totalPriceSpan.innerText = total;
-    
-    let whatsappMsg = "مرحباً ترولي ماركت، أنا عاوز أطلب الحاجات دي:%0a%0a";
-    cart.forEach(item => { whatsappMsg += `- ${item.name} (الكمية: ${item.qty}) = ${item.price * item.qty} ج%0a`; });
-    whatsappMsg += `%0aالإجمالي: ${total} جنيه`;
-    
-    const checkoutBtn = document.getElementById('checkout-btn');
-    if(checkoutBtn) checkoutBtn.href = `https://wa.me/201063883209?text=${whatsappMsg}`;
+    const totalSpan = document.getElementById('total-price');
+    if(totalSpan) totalSpan.innerText = total;
+    let msg = "طلب جديد من ترولي ماركت:%0a%0a";
+    cart.forEach(i => { msg += `- ${i.name} (الكمية: ${i.qty})%0a`; });
+    msg += `%0aالإجمالي: ${total} جنيه`;
+    const btn = document.getElementById('checkout-btn');
+    if(btn) btn.href = `https://wa.me/${allSettings['رقم الواتساب'] || '201063883209'}?text=${msg}`;
 }
 
-// تشغيل الثيم والبيانات عند الفتح
-document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    loadExcelData();
-});
+document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });

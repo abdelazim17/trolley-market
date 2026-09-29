@@ -4,62 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | حول</title>
+    <!-- الأيقونة المضافة هنا -->
+    <link rel="icon" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
         <div class="nav-links">
-            <a href="index.html">الرئيسية</a>
-            <a href="categories.html">الأقسام</a>
-            <a href="catalog.html">مجلة العروض</a>
-            <a href="about.html" class="active">حول</a>
+            
+        <a href="index.html" class="">الرئيسية</a>
+        <a href="categories.html" class="">الأقسام</a>
+        <a href="catalog.html" class="">مجلة العروض</a>
+        <a href="about.html" class="active">حول</a>
+    
         </div>
         <div class="actions-container">
-            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </button>
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+            <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span></button>
         </div>
     </header>
 
-    <div style="padding: 40px 5%; text-align: center; min-height: 70vh;">
-        <h1 style="margin-bottom: 10px; color: var(--primary); font-size: 2.5rem; font-weight: 900;">ترولي ماركت</h1>
-        <h3 style="margin-bottom: 30px; color: var(--secondary); font-size: 1.3rem;">كل طلبات البيت لحد البيت</h3>
+    
+    <div class="about-container">
+        <i class="fas fa-shopping-basket" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h1>عن ترولي ماركت</h1>
+        <p style="font-size: 1.2rem; margin-top: 10px;">أسرع دليفري لحد باب البيت - تسوق جميع احتياجاتك بسهولة.</p>
         
-        <div style="background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; border: 1px solid var(--border-color);">
-            <img src="images/qr_code.png" alt="QR Code" style="width: 180px; height: 180px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ccc;">
-            <p style="font-size: 1.1rem; margin-bottom: 10px; font-weight: bold;">امسح الرمز (QR Code) لزيارة الموقع</p>
-            <p style="font-size: 2rem; font-weight: bold; margin: 15px 0; color: var(--primary); direction: ltr; font-family: sans-serif;">01063883209</p>
+        <div class="about-grid">
+            <!-- اليمين: الواتساب -->
+            <div class="qr-card right-card">
+                <h3><i class="fab fa-whatsapp"></i> جروب العروض</h3>
+                <img id="qr-whatsapp-img" src="images/placeholder.png" alt="QR Whatsapp">
+                <p id="wa-number" style="font-weight:bold; font-size:1.3rem; color:var(--text-color); margin-bottom: 15px;">جاري التحميل...</p>
+                <a id="wa-link" href="#" class="btn-primary" target="_blank">تواصل معنا</a>
+            </div>
             
-            <div style="margin-top: 25px; display:flex; gap:10px;">
-                <input type="text" id="site-url" value="https://abdelazim17.github.io/trolley-market" readonly style="flex:1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; text-align: left; direction: ltr; background:var(--bg-color); color:var(--text-color);">
-                <button onclick="copyLink()" style="padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">نسخ الرابط</button>
+            <!-- الشمال: الموقع -->
+            <div class="qr-card left-card">
+                <h3><i class="fas fa-globe"></i> موقعنا الإلكتروني</h3>
+                <img id="qr-website-img" src="images/placeholder.png" alt="QR Website">
+                <a id="website-link" href="#" class="website-url" target="_blank">جاري التحميل...</a>
+                <button onclick="shareWebsite()" class="btn-secondary"><i class="fas fa-share-alt"></i> مشاركة الموقع</button>
             </div>
         </div>
     </div>
 
-    
-    <!-- شريط التنقل السفلي للموبايل -->
-    <nav class="bottom-nav">
-        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html" class=""><i class="fas fa-th-list"></i>الأقسام</a>
-        <a href="catalog.html" class=""><i class="fas fa-book-open"></i>مجلة العروض</a>
-        <a href="about.html" class="active"><i class="fas fa-info-circle"></i>حول</a>
-    </nav>
-    
 
+    <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
+    
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header"><h3>سلة المشتريات</h3><button class="close-cart" onclick="toggleCart()">&times;</button></div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer">
+            <div style="font-size:1.2rem;font-weight:bold;margin-bottom:15px;text-align:center;">الإجمالي: <span id="total-price">0</span> جنيه</div>
+            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn"><i class="fab fa-whatsapp"></i> إرسال الطلب واتساب</a>
+            <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
+        </div>
+    </div>
     <script src="app.js"></script>
-    <script>
-        function copyLink() {
-            const copyText = document.getElementById("site-url");
-            copyText.select();
-            document.execCommand("copy");
-            alert("تم نسخ رابط الموقع بنجاح!");
-        }
-    </script>
 </body>
 </html>

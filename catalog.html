@@ -4,82 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | مجلة العروض</title>
+    <!-- الأيقونة المضافة هنا -->
+    <link rel="icon" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
+            <span>TROLLEY MARKET</span>
         </div>
         <div class="nav-links">
-            <a href="index.html">الرئيسية</a>
-            <a href="categories.html">الأقسام</a>
-            <a href="catalog.html" class="active">مجلة العروض</a>
-            <a href="about.html">حول</a>
+            
+        <a href="index.html" class="">الرئيسية</a>
+        <a href="categories.html" class="">الأقسام</a>
+        <a href="catalog.html" class="active">مجلة العروض</a>
+        <a href="about.html" class="">حول</a>
+    
         </div>
         <div class="actions-container">
-            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </button>
-            <button class="cart-btn" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span>
-            </button>
+            <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+            <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span></button>
         </div>
     </header>
 
+    
     <div class="catalog-container">
-        <h1 style="margin-bottom: 10px; font-size: 2.2rem;">📖 مجلة العروض الحصرية</h1>
-        <p style="margin-bottom: 30px; font-size: 1.1rem; opacity: 0.8;">تصفح صفحات المجلة الخمس وتعرف على أحدث العروض والخصومات</p>
-        
-        <div class="catalog-page">
-            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الأولى (1 / 5)</h2>
-            <img src="images/offer_page_1.jpg" alt="صفحة العروض 1" onerror="this.src='images/placeholder.png'">
-        </div>
-        <div class="catalog-page">
-            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثانية (2 / 5)</h2>
-            <img src="images/offer_page_2.jpg" alt="صفحة العروض 2" onerror="this.src='images/placeholder.png'">
-        </div>
-        <div class="catalog-page">
-            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الثالثة (3 / 5)</h2>
-            <img src="images/offer_page_3.jpg" alt="صفحة العروض 3" onerror="this.src='images/placeholder.png'">
-        </div>
-        <div class="catalog-page">
-            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الرابعة (4 / 5)</h2>
-            <img src="images/offer_page_4.jpg" alt="صفحة العروض 4" onerror="this.src='images/placeholder.png'">
-        </div>
-        <div class="catalog-page">
-            <h2 style="margin-bottom: 15px; color: var(--primary);">الصفحة الخامسة (5 / 5)</h2>
-            <img src="images/offer_page_5.jpg" alt="صفحة العروض 5" onerror="this.src='images/placeholder.png'">
-        </div>
+        <h1 style="margin-bottom: 30px;">📖 مجلة العروض</h1>
+        <div id="loading" style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        <div id="catalog-pages-container"></div>
     </div>
 
+
+    <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
+    
     <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>سلة المشتريات</h3>
-            <button class="close-cart" onclick="toggleCart()">&times;</button>
-        </div>
+        <div class="cart-header"><h3>سلة المشتريات</h3><button class="close-cart" onclick="toggleCart()">&times;</button></div>
         <div class="cart-items" id="cart-items"></div>
         <div class="cart-footer">
-            <div class="cart-total">الإجمالي: <span id="total-price">0</span> جنيه</div>
-            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn">
-                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
-            </a>
+            <div style="font-size:1.2rem;font-weight:bold;margin-bottom:15px;text-align:center;">الإجمالي: <span id="total-price">0</span> جنيه</div>
+            <a href="#" target="_blank" class="checkout-btn" id="checkout-btn"><i class="fab fa-whatsapp"></i> إرسال الطلب واتساب</a>
             <button class="clear-cart-btn" onclick="clearCart()">إزالة كل الطلبات</button>
         </div>
     </div>
-
-    
-    <!-- شريط التنقل السفلي للموبايل -->
-    <nav class="bottom-nav">
-        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html" class=""><i class="fas fa-th-list"></i>الأقسام</a>
-        <a href="catalog.html" class="active"><i class="fas fa-book-open"></i>مجلة العروض</a>
-        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
-    </nav>
-    
-
     <script src="app.js"></script>
 </body>
 </html>
