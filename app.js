@@ -1,11 +1,6 @@
 
-let allOffers = [];
-let allProducts = [];
-let CATEGORIES = [];
-let sliderData = [];
-let bannersData = {};
-let catalogData = [];
-let allSettings = {};
+let allOffers = []; let allProducts = []; let CATEGORIES = [];
+let sliderData = []; let bannersData = {}; let catalogData = []; let allSettings = {};
 let currentSliderIndex = 0;
 
 function initTheme() {
@@ -31,43 +26,42 @@ async function loadExcelData() {
         const arrayBuffer = await response.arrayBuffer();
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
         
-        // 1. Slider
-        if(workbook.Sheets['السلايدر']) sliderData = XLSX.utils.sheet_to_json(workbook.Sheets['السلايدر']);
-        // 2. Banners
-        if(workbook.Sheets['البنرات']) {
-            let b = XLSX.utils.sheet_to_json(workbook.Sheets['البنرات']);
-            b.forEach(item => bannersData[item['مكان_البانر']] = item['صورة']);
-        }
-        // 3. Offers
-        if(workbook.Sheets['عروض اليوم']) {
-            allOffers = XLSX.utils.sheet_to_json(workbook.Sheets['عروض اليوم']).filter(i => i['متوفر'] !== 'لا');
-            allOffers.forEach(p => p.id = 'off_' + Math.random().toString(36).substr(2, 9));
-        }
-        // 4. Catalog
-        if(workbook.Sheets['مجلة العروض']) catalogData = XLSX.utils.sheet_to_json(workbook.Sheets['مجلة العروض']);
-        // 5. Settings
-        if(workbook.Sheets['الإعدادات']) {
-            let s = XLSX.utils.sheet_to_json(workbook.Sheets['الإعدادات']);
-            s.forEach(item => allSettings[item['الإعداد']] = item['القيمة']);
-        }
+        try { if(workbook.Sheets['السلايدر']) sliderData = XLSX.utils.sheet_to_json(workbook.Sheets['السلايدر']); } catch(e){}
+        try { 
+            if(workbook.Sheets['البنرات']) {
+                let b = XLSX.utils.sheet_to_json(workbook.Sheets['البنرات']);
+                b.forEach(item => bannersData[item['مكان_البانر']] = item['صورة']);
+            }
+        } catch(e){}
+        try {
+            if(workbook.Sheets['عروض اليوم']) {
+                allOffers = XLSX.utils.sheet_to_json(workbook.Sheets['عروض اليوم']).filter(i => i['متوفر'] !== 'لا');
+                allOffers.forEach(p => p.id = 'off_' + Math.random().toString(36).substr(2, 9));
+            }
+        } catch(e){}
+        try { if(workbook.Sheets['مجلة العروض']) catalogData = XLSX.utils.sheet_to_json(workbook.Sheets['مجلة العروض']); } catch(e){}
+        try {
+            if(workbook.Sheets['الإعدادات']) {
+                let s = XLSX.utils.sheet_to_json(workbook.Sheets['الإعدادات']);
+                s.forEach(item => allSettings[item['الإعداد']] = item['القيمة']);
+            }
+        } catch(e){}
         
-        // 6. Dynamic Categories (Every sheet except the core ones)
         const excludeSheets = ['السلايدر', 'البنرات', 'عروض اليوم', 'مجلة العروض', 'الإعدادات'];
         CATEGORIES = workbook.SheetNames.filter(name => !excludeSheets.includes(name));
         
         CATEGORIES.forEach(cat => {
-            let catProds = XLSX.utils.sheet_to_json(workbook.Sheets[cat]).filter(i => i['متوفر'] !== 'لا');
-            catProds.forEach(p => {
-                p['القسم'] = cat;
-                p.id = 'prod_' + Math.random().toString(36).substr(2, 9);
-            });
-            allProducts = allProducts.concat(catProds);
+            try {
+                let catProds = XLSX.utils.sheet_to_json(workbook.Sheets[cat]).filter(i => i['متوفر'] !== 'لا');
+                catProds.forEach(p => { p['القسم'] = cat; p.id = 'prod_' + Math.random().toString(36).substr(2, 9); });
+                allProducts = allProducts.concat(catProds);
+            } catch(e){}
         });
 
         if(document.getElementById('loading')) document.getElementById('loading').style.display = 'none';
 
         const path = window.location.pathname;
-        if(path.includes('index') || path.endsWith('/')) {
+        if(path.includes('index') || path.endsWith('/') || path.endsWith('.html') && !path.includes('categories') && !path.includes('about') && !path.includes('catalog')) {
             renderTodayOffers();
             startBannerSlider();
             applyBanners();
@@ -85,13 +79,19 @@ async function loadExcelData() {
         updateCartUI();
     } catch (error) {
         console.error("Error loading Excel:", error);
-        if(document.getElementById('loading')) document.getElementById('loading').innerHTML = 'خطأ في تحميل ملف الإكسيل data.xlsx';
+        if(document.getElementById('loading')) {
+            document.getElementById('loading').innerHTML = '<div style="color:red; font-size:1.2rem; padding: 20px;">خطأ: تأكد من رفع ملف data.xlsx بشكل صحيح في مجلد الموقع!</div>';
+        }
+        // Fallback for About page to remove "جاري التحميل" if it completely fails
+        if(window.location.pathname.includes('about')) applyAboutSettings(); 
     }
 }
 
 function startBannerSlider() {
     const sliderLink = document.getElementById('slider-link');
     const imgElem = document.getElementById('slider-banner-img');
+    const badgeElem = document.getElementById('slider-cat-name');
+    
     if(!imgElem || sliderData.length === 0) {
         if(imgElem) imgElem.parentElement.style.display = 'none';
         return;
@@ -100,8 +100,18 @@ function startBannerSlider() {
     function showSlide() {
         const slide = sliderData[currentSliderIndex];
         imgElem.style.opacity = 0;
+        
         setTimeout(() => {
             imgElem.src = slide['صورة'] || 'images/placeholder.png';
+            if(badgeElem) {
+                if(slide['القسم_المستهدف']) {
+                    badgeElem.innerText = slide['القسم_المستهدف'];
+                    badgeElem.style.display = 'block';
+                } else {
+                    badgeElem.style.display = 'none';
+                }
+            }
+            
             sliderLink.onclick = (e) => {
                 e.preventDefault();
                 if(slide['القسم_المستهدف']) {
@@ -112,11 +122,12 @@ function startBannerSlider() {
             imgElem.style.opacity = 1;
         }, 300);
     }
+    
     showSlide();
     setInterval(() => {
         currentSliderIndex = (currentSliderIndex + 1) % sliderData.length;
         showSlide();
-    }, 3500);
+    }, 4000); // 4 seconds
 }
 
 function applyBanners() {
@@ -130,6 +141,11 @@ function renderCatalog() {
     if(!container) return;
     container.innerHTML = '';
     
+    if(catalogData.length === 0) {
+        container.innerHTML = '<p>لا توجد صور في مجلة العروض حالياً. تأكد من إضافة بيانات في شيت (مجلة العروض).</p>';
+        return;
+    }
+    
     catalogData.forEach(page => {
         container.innerHTML += `
             <div class="catalog-page">
@@ -140,32 +156,24 @@ function renderCatalog() {
 }
 
 function applyAboutSettings() {
-    if(allSettings['رقم الواتساب'] && document.getElementById('wa-number')) {
-        document.getElementById('wa-number').innerText = allSettings['رقم الواتساب'];
+    const phone = allSettings['رقم الواتساب'] || 'غير متوفر';
+    const link = allSettings['رابط الموقع'] || 'غير متوفر';
+    
+    if(document.getElementById('wa-number')) document.getElementById('wa-number').innerText = phone;
+    if(document.getElementById('wa-link') && allSettings['رابط الواتساب']) document.getElementById('wa-link').href = allSettings['رابط الواتساب'];
+    if(document.getElementById('qr-whatsapp-img') && allSettings['صورة كيو آر الواتساب']) document.getElementById('qr-whatsapp-img').src = allSettings['صورة كيو آر الواتساب'];
+    
+    if(document.getElementById('website-link')) {
+        document.getElementById('website-link').innerText = link;
+        if(link !== 'غير متوفر') document.getElementById('website-link').href = link;
     }
-    if(allSettings['رابط الواتساب'] && document.getElementById('wa-link')) {
-        document.getElementById('wa-link').href = allSettings['رابط الواتساب'];
-    }
-    if(allSettings['صورة كيو آر الواتساب'] && document.getElementById('qr-whatsapp-img')) {
-        document.getElementById('qr-whatsapp-img').src = allSettings['صورة كيو آر الواتساب'];
-    }
-    if(allSettings['رابط الموقع'] && document.getElementById('website-link')) {
-        document.getElementById('website-link').innerText = allSettings['رابط الموقع'];
-        document.getElementById('website-link').href = allSettings['رابط الموقع'];
-    }
-    if(allSettings['صورة كيو آر الموقع'] && document.getElementById('qr-website-img')) {
-        document.getElementById('qr-website-img').src = allSettings['صورة كيو آر الموقع'];
-    }
+    if(document.getElementById('qr-website-img') && allSettings['صورة كيو آر الموقع']) document.getElementById('qr-website-img').src = allSettings['صورة كيو آر الموقع'];
 }
 
 window.shareWebsite = function() {
     const url = allSettings['رابط الموقع'] || window.location.href;
     if (navigator.share) {
-        navigator.share({
-            title: 'ترولي ماركت',
-            text: 'تسوق أفضل العروض والمنتجات من ترولي ماركت! أسرع دليفري لحد باب البيت.',
-            url: url
-        }).catch(console.error);
+        navigator.share({ title: 'ترولي ماركت', text: 'تسوق أفضل العروض والمنتجات من ترولي ماركت!', url: url }).catch(console.error);
     } else {
         alert('ميزة المشاركة غير مدعومة في هذا المتصفح، يمكنك نسخ هذا الرابط: ' + url);
     }
@@ -175,8 +183,7 @@ function getProductHTML(p) {
     let oldP = p['السعر الأساسي'];
     let newP = p['السعر بعد الخصم'];
     let hasOffer = newP && newP !== '';
-    let priceHTML = '';
-    let badgeHTML = '';
+    let priceHTML = ''; let badgeHTML = '';
     
     if (hasOffer && oldP > newP) {
         let discountPct = Math.round(((oldP - newP) / oldP) * 100);
@@ -210,10 +217,7 @@ function renderTodayOffers() {
     if(!container) return;
     container.innerHTML = '';
     if(allOffers.length > 0) {
-        container.innerHTML = `
-            <div class="section-header"><h3>🔥 عروض اليوم</h3></div>
-            <div class="products-grid">${allOffers.map(p => getProductHTML(p)).join('')}</div>
-        `;
+        container.innerHTML = `<div class="section-header"><h3>🔥 عروض اليوم</h3></div><div class="products-grid">${allOffers.map(p => getProductHTML(p)).join('')}</div>`;
     }
 }
 
@@ -240,29 +244,18 @@ window.filterCategory = function(selectedCat) {
         CATEGORIES.forEach(cat => {
             const catProducts = allProducts.filter(p => p['القسم'] === cat);
             if(catProducts.length > 0) {
-                container.innerHTML += `<div class="category-section">
-                    <div class="section-header"><h3>${cat}</h3></div>
-                    <div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div>
-                </div>`;
+                container.innerHTML += `<div class="category-section"><div class="section-header"><h3>${cat}</h3></div><div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div></div>`;
             }
         });
     } else {
         const catProducts = allProducts.filter(p => p['القسم'] === selectedCat);
-        container.innerHTML = `<div class="category-section">
-            <div class="section-header"><h3>${selectedCat}</h3></div>
-            <div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div>
-        </div>`;
+        container.innerHTML = `<div class="category-section"><div class="section-header"><h3>${selectedCat}</h3></div><div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div></div>`;
     }
 }
 
-// Cart Logic
 window.changeQty = function(id, delta) {
     const input = document.getElementById(`qty-${id}`);
-    if(input) {
-        let val = parseInt(input.value) + delta;
-        if(val < 1) val = 1; if(val > 25) val = 25;
-        input.value = val;
-    }
+    if(input) { let val = parseInt(input.value) + delta; if(val < 1) val = 1; if(val > 25) val = 25; input.value = val; }
 }
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 window.toggleCart = function() { document.getElementById('cart-sidebar').classList.toggle('open'); }
@@ -284,16 +277,12 @@ function updateCartUI() {
     if(count) count.innerText = cart.reduce((sum, i) => sum + i.qty, 0);
     const div = document.getElementById('cart-items');
     if(!div) return;
-    div.innerHTML = '';
-    let total = 0;
+    div.innerHTML = ''; let total = 0;
     if(cart.length === 0) { div.innerHTML = '<p style="text-align:center;color:#999;margin-top:20px;">السلة فارغة</p>'; } 
     else {
         cart.forEach(i => {
             total += i.price * i.qty;
-            div.innerHTML += `<div class="cart-item">
-                <div><strong>${i.name}</strong><br><small>${i.qty} x ${i.price} ج</small></div>
-                <div style="text-align:left;"><strong>${i.price * i.qty} ج</strong><br><button onclick="removeFromCart('${i.name}')" style="color:red;border:none;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button></div>
-            </div>`;
+            div.innerHTML += `<div class="cart-item"><div><strong>${i.name}</strong><br><small>${i.qty} x ${i.price} ج</small></div><div style="text-align:left;"><strong>${i.price * i.qty} ج</strong><br><button onclick="removeFromCart('${i.name}')" style="color:red;border:none;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button></div></div>`;
         });
     }
     const totalSpan = document.getElementById('total-price');

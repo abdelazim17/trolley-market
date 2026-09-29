@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ترولي ماركت | الرئيسية</title>
-    <!-- الأيقونة المضافة هنا -->
     <link rel="icon" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,6 +11,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="top-bar">
+        <div class="top-bar-text"><i class="fas fa-shopping-basket"></i> كل طلبات البيت لحد البيت</div>
+        <div class="top-bar-text"><i class="fas fa-motorcycle"></i> أسرع دليفري وأفضل جودة</div>
+    </div>
+
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
@@ -32,7 +36,12 @@
     </header>
 
     
-    <a href="#" id="slider-link"><section class="banner-slider-container"><img id="slider-banner-img" src="images/placeholder.png"></section></a>
+    <a href="#" id="slider-link">
+        <section class="banner-slider-container">
+            <img id="slider-banner-img" src="images/placeholder.png">
+            <div id="slider-cat-name" class="glass-badge"></div>
+        </section>
+    </a>
     <section class="split-banners"><div class="half-banner"><img id="split1-img" src="images/placeholder.png"></div><div class="half-banner"><img id="split2-img" src="images/placeholder.png"></div></section>
     <section class="static-banner"><img id="main-banner-img" src="images/placeholder.png"></section>
     <main class="products-section">
