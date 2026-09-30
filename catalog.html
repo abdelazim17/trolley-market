@@ -30,10 +30,20 @@
     
         </div>
         <div class="actions-container">
+            <button class="search-btn" onclick="toggleSearch()" title="بحث"><i class="fas fa-search"></i></button>
             <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
             <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> السلة <span id="cart-count">0</span></button>
         </div>
     </header>
+
+    <div class="mobile-top-nav">
+        
+        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="categories.html" class=""><i class="fas fa-th-large"></i>الأقسام</a>
+        <a href="catalog.html" class="active"><i class="fas fa-book-open"></i>المجلة</a>
+        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
+    
+    </div>
 
     
     <div class="catalog-container">
@@ -43,13 +53,15 @@
     </div>
 
 
-    <div class="mobile-bottom-nav">
-        
-        <a href="index.html" class=""><i class="fas fa-home"></i>الرئيسية</a>
-        <a href="categories.html" class=""><i class="fas fa-th-large"></i>الأقسام</a>
-        <a href="catalog.html" class="active"><i class="fas fa-book-open"></i>المجلة</a>
-        <a href="about.html" class=""><i class="fas fa-info-circle"></i>حول</a>
-    
+    <!-- Search Modal -->
+    <div class="search-modal" id="search-modal">
+        <div class="search-header">
+            <input type="text" id="search-input" placeholder="ابحث عن منتج (مثال: طماطم)..." onkeyup="performSearch(event)">
+            <button onclick="toggleSearch()" class="close-search">&times;</button>
+        </div>
+        <div class="search-results" id="search-results">
+            <!-- Results will appear here -->
+        </div>
     </div>
 
     <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>

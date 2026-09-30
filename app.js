@@ -154,6 +154,10 @@ function applyAboutSettings() {
     const phone = allSettings['رقم الواتساب'] || 'غير متوفر';
     const link = allSettings['رابط الموقع'] || 'غير متوفر';
     
+    if(document.getElementById('about-main-img') && allSettings['صورة صفحة حول']) {
+        document.getElementById('about-main-img').src = allSettings['صورة صفحة حول'];
+    }
+
     if(document.getElementById('wa-number')) document.getElementById('wa-number').innerText = phone;
     if(document.getElementById('wa-link') && allSettings['رابط الواتساب']) document.getElementById('wa-link').href = allSettings['رابط الواتساب'];
     if(document.getElementById('qr-whatsapp-img') && allSettings['صورة كيو آر الواتساب']) document.getElementById('qr-whatsapp-img').src = allSettings['صورة كيو آر الواتساب'];
@@ -249,6 +253,37 @@ window.filterCategory = function(selectedCat) {
     } else {
         const catProducts = allProducts.filter(p => p['القسم'] === selectedCat);
         container.innerHTML = `<div class="category-section"><div class="section-header"><h3>${selectedCat}</h3></div><div class="products-grid">${catProducts.map(p => getProductHTML(p)).join('')}</div></div>`;
+    }
+}
+
+/* Search Logic */
+window.toggleSearch = function() {
+    const modal = document.getElementById('search-modal');
+    modal.classList.toggle('open');
+    if(modal.classList.contains('open')) {
+        document.getElementById('search-input').focus();
+    }
+}
+window.performSearch = function(e) {
+    const query = document.getElementById('search-input').value.trim().toLowerCase();
+    const resultsContainer = document.getElementById('search-results');
+    if(query.length === 0) { resultsContainer.innerHTML = ''; return; }
+    
+    const results = allProducts.filter(p => p['الاسم'].toLowerCase().includes(query));
+    
+    if(results.length > 0) {
+        resultsContainer.innerHTML = `<div class="products-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">${results.map(p => getProductHTML(p)).join('')}</div>`;
+    } else {
+        let phone = allSettings['رقم الواتساب'] || '201063883209';
+        let waMsg = encodeURIComponent(`طلب خاص: أحتاج إلى شراء (${query})`);
+        resultsContainer.innerHTML = `
+            <div style="text-align:center; padding: 40px 20px;">
+                <i class="fas fa-box-open" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
+                <h3 style="margin-bottom: 10px; color: var(--primary);">عذراً، المنتج غير متوفر حالياً</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 25px; color: var(--text-color);">يمكنك طلبه كطلب خاص وسنقوم بتوفيره لك بأسرع وقت.</p>
+                <a href="https://wa.me/${phone}?text=${waMsg}" target="_blank" class="btn-primary" style="display:inline-block; width:auto; padding: 12px 30px; font-size: 1.1rem;"><i class="fab fa-whatsapp"></i> طلب خاص عبر الواتساب</a>
+            </div>
+        `;
     }
 }
 
