@@ -159,7 +159,6 @@ function applyAboutSettings() {
     if(document.getElementById('about-main-img') && allSettings['صورة صفحة حول']) document.getElementById('about-main-img').src = allSettings['صورة صفحة حول'];
     if(document.getElementById('wa-number')) document.getElementById('wa-number').innerText = rawPhone;
     
-    // FIX: Use the official api.whatsapp.com instead of wa.me for better compatibility
     const waLinkStr = `https://api.whatsapp.com/send?phone=${cleanPhone}`;
     if(document.getElementById('wa-link')) document.getElementById('wa-link').href = waLinkStr;
     if(document.getElementById('wa-social-link')) document.getElementById('wa-social-link').href = waLinkStr;
@@ -267,7 +266,6 @@ window.performSearch = function(e) {
         resultsContainer.innerHTML = `<div class="products-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">${results.map(p => getProductHTML(p)).join('')}</div>`;
     } else {
         let cleanPhone = getCleanPhone();
-        // FIX: Encode the text properly for the URL
         let rawMsg = `طلب خاص: أحتاج إلى شراء (${query})`;
         let waMsg = encodeURIComponent(rawMsg);
         resultsContainer.innerHTML = `
@@ -319,9 +317,12 @@ function updateCartUI() {
     const totalSpan = document.getElementById('total-price');
     if(totalSpan) totalSpan.innerText = total;
     
-    // FIX: Format the message text with raw line breaks, THEN encode the entire thing
+    // FIX: Add price breakdown to the WhatsApp message
     let msgText = "طلب جديد من ترولي ماركت:\n\n";
-    cart.forEach(i => { msgText += `- ${i.name} (الكمية: ${i.qty})\n`; });
+    cart.forEach(i => { 
+        let itemTotal = i.qty * i.price;
+        msgText += `- ${i.name} (الكمية: ${i.qty} × ${i.price} ج = ${itemTotal} ج)\n`; 
+    });
     msgText += `\nالإجمالي: ${total} جنيه`;
     
     let encodedMsg = encodeURIComponent(msgText);
