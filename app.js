@@ -48,13 +48,23 @@ async function loadExcelData() {
         const excludeSheets = ['السلايدر', 'البنرات', 'عروض اليوم', 'مجلة العروض', 'الإعدادات'];
         CATEGORIES = workbook.SheetNames.filter(name => !excludeSheets.includes(name));
         
+        let activeCategories = [];
         CATEGORIES.forEach(cat => {
             try {
                 let catProds = XLSX.utils.sheet_to_json(workbook.Sheets[cat]).filter(i => i['متوفر'] !== 'لا');
-                catProds.forEach(p => { p['القسم'] = cat; p.id = 'prod_' + Math.random().toString(36).substr(2, 9); });
-                allProducts = allProducts.concat(catProds);
+                let showCategory = true;
+                if(catProds.length > 0 && catProds[0]['عرض القسم'] === 'لا') {
+                    showCategory = false;
+                }
+                
+                if(showCategory) {
+                    catProds.forEach(p => { p['القسم'] = cat; p.id = 'prod_' + Math.random().toString(36).substr(2, 9); });
+                    allProducts = allProducts.concat(catProds);
+                    activeCategories.push(cat);
+                }
             } catch(e){}
         });
+        CATEGORIES = activeCategories;
 
         if (allSettings['أيقونة الموقع']) {
             let link = document.querySelector("link[rel~='icon']");
