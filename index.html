@@ -11,11 +11,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-bar-text"><i class="fas fa-shopping-basket"></i> كل طلبات البيت لحد البيت</div>
-        <div class="top-bar-text"><i class="fas fa-motorcycle"></i> أسرع دليفري وأفضل جودة</div>
-    </div>
-
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
@@ -47,21 +42,17 @@
 
     
     <section class="static-banner top-main-banner"><img id="top-banner-img" src="images/placeholder.png"></section>
-    
     <a href="#" id="slider-link">
         <section class="banner-slider-container">
             <img id="slider-banner-img" src="images/placeholder.png">
             <div id="slider-cat-name" class="glass-badge"></div>
         </section>
     </a>
-    
     <section class="split-banners">
         <div class="half-banner"><img id="split1-img" src="images/placeholder.png"></div>
         <div class="half-banner"><img id="split2-img" src="images/placeholder.png"></div>
     </section>
-    
     <section class="static-banner"><img id="main-banner-img" src="images/placeholder.png"></section>
-    
     <main class="products-section">
         <div id="loading" style="text-align:center; padding: 20px; font-size:1.5rem;"><i class="fas fa-spinner fa-spin"></i> جاري قراءة ملف الإكسيل...</div>
         <div id="home-sections"></div>
@@ -74,9 +65,7 @@
             <input type="text" id="search-input" placeholder="ابحث عن منتج (مثال: طماطم)..." onkeyup="performSearch(event)">
             <button onclick="toggleSearch()" class="close-search">&times;</button>
         </div>
-        <div class="search-results" id="search-results">
-            <!-- Results will appear here -->
-        </div>
+        <div class="search-results" id="search-results"></div>
     </div>
 
     <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>

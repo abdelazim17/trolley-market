@@ -11,11 +11,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-bar-text"><i class="fas fa-shopping-basket"></i> كل طلبات البيت لحد البيت</div>
-        <div class="top-bar-text"><i class="fas fa-motorcycle"></i> أسرع دليفري وأفضل جودة</div>
-    </div>
-
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
@@ -59,9 +54,7 @@
             <input type="text" id="search-input" placeholder="ابحث عن منتج (مثال: طماطم)..." onkeyup="performSearch(event)">
             <button onclick="toggleSearch()" class="close-search">&times;</button>
         </div>
-        <div class="search-results" id="search-results">
-            <!-- Results will appear here -->
-        </div>
+        <div class="search-results" id="search-results"></div>
     </div>
 
     <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>

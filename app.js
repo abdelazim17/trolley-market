@@ -7,13 +7,11 @@ function initTheme() {
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     updateThemeIcon();
 }
-
 window.toggleTheme = function() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     updateThemeIcon();
 }
-
 function updateThemeIcon() {
     const icon = document.getElementById('theme-icon');
     if (icon) icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
@@ -81,7 +79,6 @@ async function loadExcelData() {
         } else if(path.includes('catalog')) {
             renderCatalog();
         }
-
         updateCartUI();
     } catch (error) {
         console.error("Error loading Excel:", error);
@@ -96,37 +93,24 @@ function startBannerSlider() {
     const sliderLink = document.getElementById('slider-link');
     const imgElem = document.getElementById('slider-banner-img');
     const badgeElem = document.getElementById('slider-cat-name');
-    
-    if(!imgElem || sliderData.length === 0) {
-        if(imgElem) imgElem.parentElement.style.display = 'none';
-        return;
-    }
+    if(!imgElem || sliderData.length === 0) { if(imgElem) imgElem.parentElement.style.display = 'none'; return; }
 
     function showSlide() {
         const slide = sliderData[currentSliderIndex];
         imgElem.style.opacity = 0;
-        
         setTimeout(() => {
             imgElem.src = slide['صورة'] || 'images/placeholder.png';
             if(badgeElem) {
-                if(slide['القسم_المستهدف']) {
-                    badgeElem.innerText = slide['القسم_المستهدف'];
-                    badgeElem.style.display = 'block';
-                } else {
-                    badgeElem.style.display = 'none';
-                }
+                if(slide['القسم_المستهدف']) { badgeElem.innerText = slide['القسم_المستهدف']; badgeElem.style.display = 'block'; } 
+                else { badgeElem.style.display = 'none'; }
             }
             sliderLink.onclick = (e) => {
                 e.preventDefault();
-                if(slide['القسم_المستهدف']) {
-                    localStorage.setItem('selectedCategory', slide['القسم_المستهدف']);
-                    window.location.href = 'categories.html';
-                }
+                if(slide['القسم_المستهدف']) { localStorage.setItem('selectedCategory', slide['القسم_المستهدف']); window.location.href = 'categories.html'; }
             };
             imgElem.style.opacity = 1;
         }, 300);
     }
-    
     showSlide();
     setInterval(() => { currentSliderIndex = (currentSliderIndex + 1) % sliderData.length; showSlide(); }, 4000);
 }
@@ -142,9 +126,7 @@ function renderCatalog() {
     const container = document.getElementById('catalog-pages-container');
     if(!container) return;
     container.innerHTML = '';
-    if(catalogData.length === 0) {
-        container.innerHTML = '<p>لا توجد صور في مجلة العروض حالياً.</p>'; return;
-    }
+    if(catalogData.length === 0) { container.innerHTML = '<p>لا توجد صور في مجلة العروض حالياً.</p>'; return; }
     catalogData.forEach(page => {
         container.innerHTML += `<div class="catalog-page"><img src="${page['صورة']}" alt="صفحة ${page['رقم_الصفحة']}" onerror="this.src='images/placeholder.png'"></div>`;
     });
@@ -154,10 +136,7 @@ function applyAboutSettings() {
     const phone = allSettings['رقم الواتساب'] || 'غير متوفر';
     const link = allSettings['رابط الموقع'] || 'غير متوفر';
     
-    if(document.getElementById('about-main-img') && allSettings['صورة صفحة حول']) {
-        document.getElementById('about-main-img').src = allSettings['صورة صفحة حول'];
-    }
-
+    if(document.getElementById('about-main-img') && allSettings['صورة صفحة حول']) document.getElementById('about-main-img').src = allSettings['صورة صفحة حول'];
     if(document.getElementById('wa-number')) document.getElementById('wa-number').innerText = phone;
     if(document.getElementById('wa-link') && allSettings['رابط الواتساب']) document.getElementById('wa-link').href = allSettings['رابط الواتساب'];
     if(document.getElementById('qr-whatsapp-img') && allSettings['صورة كيو آر الواتساب']) document.getElementById('qr-whatsapp-img').src = allSettings['صورة كيو آر الواتساب'];
@@ -167,7 +146,6 @@ function applyAboutSettings() {
         if(link !== 'غير متوفر') document.getElementById('website-link').href = link;
     }
     if(document.getElementById('qr-website-img') && allSettings['صورة كيو آر الموقع']) document.getElementById('qr-website-img').src = allSettings['صورة كيو آر الموقع'];
-    
     if(document.getElementById('fb-link') && allSettings['رابط فيسبوك']) document.getElementById('fb-link').href = allSettings['رابط فيسبوك'];
     if(document.getElementById('ig-link') && allSettings['رابط إنستجرام']) document.getElementById('ig-link').href = allSettings['رابط إنستجرام'];
     if(document.getElementById('wa-social-link') && allSettings['رابط الواتساب']) document.getElementById('wa-social-link').href = allSettings['رابط الواتساب'];
@@ -175,11 +153,8 @@ function applyAboutSettings() {
 
 window.shareWebsite = function() {
     const url = allSettings['رابط الموقع'] || window.location.href;
-    if (navigator.share) {
-        navigator.share({ title: 'ترولي ماركت', text: 'تسوق أفضل العروض والمنتجات!', url: url }).catch(console.error);
-    } else {
-        alert('يمكنك نسخ هذا الرابط: ' + url);
-    }
+    if (navigator.share) { navigator.share({ title: 'ترولي ماركت', text: 'تسوق أفضل العروض والمنتجات!', url: url }).catch(console.error); } 
+    else { alert('يمكنك نسخ هذا الرابط: ' + url); }
 }
 
 function getProductHTML(p) {
@@ -195,7 +170,6 @@ function getProductHTML(p) {
     } else {
         priceHTML = `<span class="new-price">${oldP} ج</span>`;
     }
-        
     let currentPrice = hasOffer ? newP : oldP;
     let imgSrc = p['صورة'] || 'images/placeholder.png';
 
@@ -228,9 +202,7 @@ function initCategoryFilterBar() {
     const bar = document.getElementById('category-filter-bar');
     if(!bar) return;
     bar.innerHTML = `<button class="cat-filter-btn" id="btn-cat-الكل" onclick="filterCategory('الكل')">الكل</button>`;
-    CATEGORIES.forEach(cat => {
-        bar.innerHTML += `<button class="cat-filter-btn" id="btn-cat-${cat}" onclick="filterCategory('${cat}')">${cat}</button>`;
-    });
+    CATEGORIES.forEach(cat => { bar.innerHTML += `<button class="cat-filter-btn" id="btn-cat-${cat}" onclick="filterCategory('${cat}')">${cat}</button>`; });
 }
 
 window.filterCategory = function(selectedCat) {
@@ -256,13 +228,10 @@ window.filterCategory = function(selectedCat) {
     }
 }
 
-/* Search Logic */
 window.toggleSearch = function() {
     const modal = document.getElementById('search-modal');
     modal.classList.toggle('open');
-    if(modal.classList.contains('open')) {
-        document.getElementById('search-input').focus();
-    }
+    if(modal.classList.contains('open')) document.getElementById('search-input').focus();
 }
 window.performSearch = function(e) {
     const query = document.getElementById('search-input').value.trim().toLowerCase();
@@ -270,7 +239,6 @@ window.performSearch = function(e) {
     if(query.length === 0) { resultsContainer.innerHTML = ''; return; }
     
     const results = allProducts.filter(p => p['الاسم'].toLowerCase().includes(query));
-    
     if(results.length > 0) {
         resultsContainer.innerHTML = `<div class="products-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">${results.map(p => getProductHTML(p)).join('')}</div>`;
     } else {
@@ -330,5 +298,4 @@ function updateCartUI() {
     const btn = document.getElementById('checkout-btn');
     if(btn) btn.href = `https://wa.me/${allSettings['رقم الواتساب'] || '201063883209'}?text=${msg}`;
 }
-
 document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });

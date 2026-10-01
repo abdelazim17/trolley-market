@@ -11,11 +11,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-bar-text"><i class="fas fa-shopping-basket"></i> كل طلبات البيت لحد البيت</div>
-        <div class="top-bar-text"><i class="fas fa-motorcycle"></i> أسرع دليفري وأفضل جودة</div>
-    </div>
-
     <header class="navbar">
         <div class="logo">
             <h2>ترولي ماركت</h2>
@@ -50,13 +45,11 @@
         <img id="about-main-img" src="images/about_icon.jpg" class="about-main-img" alt="ترولي ماركت">
         <h1>ترولي ماركت</h1>
         <p style="font-size: 1.2rem; margin-top: 5px;">أسرع دليفري لحد باب البيت - تسوق جميع احتياجاتك بسهولة.</p>
-        
         <div class="social-glass-icons">
             <a id="fb-link" href="#" class="glass-icon" target="_blank" title="فيسبوك"><i class="fab fa-facebook-f"></i></a>
             <a id="ig-link" href="#" class="glass-icon" target="_blank" title="إنستجرام"><i class="fab fa-instagram"></i></a>
             <a id="wa-social-link" href="#" class="glass-icon" target="_blank" title="واتساب"><i class="fab fa-whatsapp"></i></a>
         </div>
-        
         <div class="about-grid">
             <div class="qr-card right-card">
                 <h3><i class="fab fa-whatsapp"></i> جروب العروض</h3>
@@ -80,9 +73,7 @@
             <input type="text" id="search-input" placeholder="ابحث عن منتج (مثال: طماطم)..." onkeyup="performSearch(event)">
             <button onclick="toggleSearch()" class="close-search">&times;</button>
         </div>
-        <div class="search-results" id="search-results">
-            <!-- Results will appear here -->
-        </div>
+        <div class="search-results" id="search-results"></div>
     </div>
 
     <div class="toast-msg" id="toast-msg">تمت الإضافة للسلة بنجاح</div>
