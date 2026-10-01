@@ -17,18 +17,14 @@ function updateThemeIcon() {
     if (icon) icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
 }
 
-// --- NEW FUNCTION: Cleans and formats the WhatsApp number ---
 function getCleanPhone() {
     let rawPhone = allSettings['رقم الواتساب'] || '201063883209';
-    // Remove +, spaces, brackets, dashes
     let clean = rawPhone.toString().replace(/[\+\-\s\(\)]/g, '');
-    // If it starts with 01 (e.g. 010, 011), prepend the 2 for Egypt's country code
     if (clean.startsWith('01')) {
         clean = '2' + clean;
     }
     return clean;
 }
-// -----------------------------------------------------------
 
 async function loadExcelData() {
     try {
@@ -163,8 +159,8 @@ function applyAboutSettings() {
     if(document.getElementById('about-main-img') && allSettings['صورة صفحة حول']) document.getElementById('about-main-img').src = allSettings['صورة صفحة حول'];
     if(document.getElementById('wa-number')) document.getElementById('wa-number').innerText = rawPhone;
     
-    // Fix WhatsApp Links everywhere in About
-    const waLinkStr = `https://wa.me/${cleanPhone}`;
+    // FIX: Use the official api.whatsapp.com instead of wa.me for better compatibility
+    const waLinkStr = `https://api.whatsapp.com/send?phone=${cleanPhone}`;
     if(document.getElementById('wa-link')) document.getElementById('wa-link').href = waLinkStr;
     if(document.getElementById('wa-social-link')) document.getElementById('wa-social-link').href = waLinkStr;
     
@@ -271,13 +267,15 @@ window.performSearch = function(e) {
         resultsContainer.innerHTML = `<div class="products-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">${results.map(p => getProductHTML(p)).join('')}</div>`;
     } else {
         let cleanPhone = getCleanPhone();
-        let waMsg = encodeURIComponent(`طلب خاص: أحتاج إلى شراء (${query})`);
+        // FIX: Encode the text properly for the URL
+        let rawMsg = `طلب خاص: أحتاج إلى شراء (${query})`;
+        let waMsg = encodeURIComponent(rawMsg);
         resultsContainer.innerHTML = `
             <div style="text-align:center; padding: 40px 20px;">
                 <i class="fas fa-box-open" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
                 <h3 style="margin-bottom: 10px; color: var(--primary);">عذراً، المنتج غير متوفر حالياً</h3>
                 <p style="font-size: 1.1rem; margin-bottom: 25px; color: var(--text-color);">يمكنك طلبه كطلب خاص وسنقوم بتوفيره لك بأسرع وقت.</p>
-                <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="btn-primary" style="display:inline-block; width:auto; padding: 12px 30px; font-size: 1.1rem;"><i class="fab fa-whatsapp"></i> طلب خاص عبر الواتساب</a>
+                <a href="https://api.whatsapp.com/send?phone=${cleanPhone}&text=${waMsg}" target="_blank" class="btn-primary" style="display:inline-block; width:auto; padding: 12px 30px; font-size: 1.1rem;"><i class="fab fa-whatsapp"></i> طلب خاص عبر الواتساب</a>
             </div>
         `;
     }
@@ -320,13 +318,16 @@ function updateCartUI() {
     }
     const totalSpan = document.getElementById('total-price');
     if(totalSpan) totalSpan.innerText = total;
-    let msg = "طلب جديد من ترولي ماركت:%0a%0a";
-    cart.forEach(i => { msg += `- ${i.name} (الكمية: ${i.qty})%0a`; });
-    msg += `%0aالإجمالي: ${total} جنيه`;
     
-    // USE THE CLEANED WHATSAPP NUMBER
+    // FIX: Format the message text with raw line breaks, THEN encode the entire thing
+    let msgText = "طلب جديد من ترولي ماركت:\n\n";
+    cart.forEach(i => { msgText += `- ${i.name} (الكمية: ${i.qty})\n`; });
+    msgText += `\nالإجمالي: ${total} جنيه`;
+    
+    let encodedMsg = encodeURIComponent(msgText);
     let cleanPhone = getCleanPhone();
+    
     const btn = document.getElementById('checkout-btn');
-    if(btn) btn.href = `https://wa.me/${cleanPhone}?text=${msg}`;
+    if(btn) btn.href = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedMsg}`;
 }
 document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });
